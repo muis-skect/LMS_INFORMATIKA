@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Informatika - Kehadiran</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
+
+  <div class="w-full max-w-7xl mx-auto">
+    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-700 p-2 rounded-lg font-bold">LMS</div>
+        <h1 class="text-xl font-bold">Rekap Kehadiran</h1>
+      </div>
+      <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">Keluar</button>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit">
+        <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-home"></i> Beranda</a>
+        <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Tugas Saya</a>
+        <a href="kehadiran.html" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-calendar-check"></i> Kehadiran</a>
+        <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Nilai & Rapor</a>
+      </aside>
+
+      <section class="md:col-span-3 space-y-4">
+        <div class="bg-white p-6 rounded-xl shadow-sm border">
+          <h3 class="text-lg font-bold mb-4">Riwayat Presensi Siswa</h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-slate-600 uppercase text-xs">
+                <tr>
+                  <th class="p-3">Tanggal</th>
+                  <th class="p-3">Mata Pelajaran</th>
+                  <th class="p-3">Status</th>
+                </tr>
+              </thead>
+              <tbody id="table-kehadiran">
+                <tr><td colspan="3" class="p-4 text-center text-slate-400">Memuat data dari Google Sheets...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
+    const userData = JSON.parse(localStorage.getItem('session_user'));
+
+    if (!userData) {
+      window.location.href = "index.html";
+    } else {
+      loadKehadiran();
+    }
+
+    function loadKehadiran() {
+      const script = document.createElement('script');
+      script.src = `${GOOGLE_SCRIPT_URL}?action=getKehadiran&id=${userData.id}&callback=renderKehadiran`;
+      document.body.appendChild(script);
+    }
+
+    function renderKehadiran(data) {
+      const tbody = document.getElementById('table-kehadiran');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Belum ada riwayat kehadiran.</td></tr>';
+        return;
+      }
+
+      data.forEach(row => {
+        let statusBadge = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold">Hadir</span>';
+        if (row.status === 'Izin') statusBadge = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">Izin</span>';
+        if (row.status === 'Sakit') statusBadge = '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold">Sakit</span>';
+        if (row.status === 'Alpa') statusBadge = '<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded text-xs font-bold">Alpa</span>';
+
+        tbody.innerHTML += `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3">${row.tanggal}</td>
+            <td class="p-3 font-medium">${row.mapel}</td>
+            <td class="p-3">${statusBadge}</td>
+          </tr>
+        `;
+      });
+    }
+
+    function logout() { localStorage.removeItem('session_user'); window.location.href = "index.html"; }
+  </script>
+</body>
+</html>
