@@ -13,7 +13,7 @@
     <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
       <div class="flex items-center gap-3">
         <div class="bg-indigo-700 p-2 rounded-lg font-bold">LMS</div>
-        <h1 class="text-xl font-bold">Rekap Kehadiran</h1>
+        <h1 class="text-xl font-bold">Rekapitulasi Kehadiran</h1>
       </div>
       <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">Keluar</button>
     </header>
@@ -28,18 +28,30 @@
 
       <section class="md:col-span-3 space-y-4">
         <div class="bg-white p-6 rounded-xl shadow-sm border">
-          <h3 class="text-lg font-bold mb-4">Riwayat Presensi Siswa</h3>
+          <h3 class="text-lg font-bold mb-4">Total Kehadiran Siswa</h3>
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 text-slate-600 uppercase text-xs">
+            <table class="w-full text-center text-sm border-collapse">
+              <thead class="bg-slate-100 text-slate-700 uppercase text-xs border-b">
                 <tr>
-                  <th class="p-3">Tanggal</th>
-                  <th class="p-3">Mata Pelajaran</th>
-                  <th class="p-3">Status</th>
+                  <th class="p-3 text-left border-r" rowspan="2">ID / NISN</th>
+                  <th class="p-3 text-left border-r" rowspan="2">Nama</th>
+                  <th class="p-3 border-r" rowspan="2">Kelas</th>
+                  <th class="p-2 border-r bg-indigo-50/50" colspan="4">Semester 1</th>
+                  <th class="p-2 bg-emerald-50/50" colspan="4">Semester 2</th>
+                </tr>
+                <tr class="border-b bg-slate-50 text-xs">
+                  <th class="p-2 text-emerald-700">Hadir</th>
+                  <th class="p-2 text-amber-700">Sakit</th>
+                  <th class="p-2 text-blue-700">Izin</th>
+                  <th class="p-2 text-rose-700 border-r">Alfa</th>
+                  <th class="p-2 text-emerald-700">Hadir</th>
+                  <th class="p-2 text-amber-700">Sakit</th>
+                  <th class="p-2 text-blue-700">Izin</th>
+                  <th class="p-2 text-rose-700">Alfa</th>
                 </tr>
               </thead>
               <tbody id="table-kehadiran">
-                <tr><td colspan="3" class="p-4 text-center text-slate-400">Memuat data dari Google Sheets...</td></tr>
+                <tr><td colspan="11" class="p-4 text-center text-slate-400">Memuat data dari Google Sheets...</td></tr>
               </tbody>
             </table>
           </div>
@@ -69,21 +81,24 @@
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-400">Belum ada riwayat kehadiran.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="11" class="p-4 text-center text-slate-400">Belum ada rekap kehadiran.</td></tr>';
         return;
       }
 
       data.forEach(row => {
-        let statusBadge = '<span class="bg-emerald-100 text-emerald-700 px-2 py-1 rounded text-xs font-bold">Hadir</span>';
-        if (row.status === 'Izin') statusBadge = '<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-bold">Izin</span>';
-        if (row.status === 'Sakit') statusBadge = '<span class="bg-amber-100 text-amber-700 px-2 py-1 rounded text-xs font-bold">Sakit</span>';
-        if (row.status === 'Alpa') statusBadge = '<span class="bg-rose-100 text-rose-700 px-2 py-1 rounded text-xs font-bold">Alpa</span>';
-
         tbody.innerHTML += `
           <tr class="border-b hover:bg-slate-50">
-            <td class="p-3">${row.tanggal}</td>
-            <td class="p-3 font-medium">${row.mapel}</td>
-            <td class="p-3">${statusBadge}</td>
+            <td class="p-3 text-left font-mono border-r">${row.id}</td>
+            <td class="p-3 text-left font-semibold border-r">${row.nama}</td>
+            <td class="p-3 border-r font-medium text-slate-600">${row.kelas}</td>
+            <td class="p-3 text-emerald-600 font-bold">${row.h1}</td>
+            <td class="p-3 text-amber-600 font-bold">${row.s1}</td>
+            <td class="p-3 text-blue-600 font-bold">${row.i1}</td>
+            <td class="p-3 text-rose-600 font-bold border-r">${row.a1}</td>
+            <td class="p-3 text-emerald-600 font-bold">${row.h2}</td>
+            <td class="p-3 text-amber-600 font-bold">${row.s2}</td>
+            <td class="p-3 text-blue-600 font-bold">${row.i2}</td>
+            <td class="p-3 text-rose-600 font-bold">${row.a2}</td>
           </tr>
         `;
       });
