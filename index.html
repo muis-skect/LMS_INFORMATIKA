@@ -19,15 +19,18 @@
     </div>
 
     <div class="p-6 space-y-5">
+      <!-- Box Status Database -->
       <div id="status-db" class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex items-center justify-between">
         <span id="status-text"><i class="fas fa-spinner fa-spin mr-1"></i> Menghubungkan ke Google Sheets...</span>
       </div>
 
+      <!-- Alert Pesan Error Login -->
       <div id="login-error" class="hidden bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs flex items-center gap-2">
         <i class="fas fa-exclamation-circle text-base"></i>
         <span id="error-text">NISN/NIP tidak terdaftar!</span>
       </div>
 
+      <!-- Form Login -->
       <form onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Pilih Peran</label>
@@ -58,10 +61,10 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
     let DATABASE_USER = [];
 
-    // Menggunakan Script Tag Injection untuk menghindari Blokir CORS
+    // Panggil action getUsers menggunakan JSONP
     function loadDataJSONP() {
       const script = document.createElement('script');
-      script.src = `${GOOGLE_SCRIPT_URL}?callback=handleDataResponse`;
+      script.src = `${GOOGLE_SCRIPT_URL}?action=getUsers&callback=handleDataResponse`;
       document.body.appendChild(script);
     }
 
@@ -71,12 +74,17 @@
       const statusText = document.getElementById('status-text');
       const btnSubmit = document.getElementById('btn-submit');
 
-      statusBox.className = "bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-xl text-xs flex items-center justify-between";
-      statusText.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Terhubung ke Database (${DATABASE_USER.length} Akun)`;
-      
-      btnSubmit.disabled = false;
-      btnSubmit.className = "w-full bg-indigo-700 text-white font-bold py-3 rounded-xl hover:bg-indigo-800 transition shadow-lg cursor-pointer";
-      btnSubmit.innerHTML = `Masuk ke Portal <i class="fas fa-arrow-right ml-2"></i>`;
+      if (Array.isArray(DATABASE_USER) && DATABASE_USER.length > 0) {
+        statusBox.className = "bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-xl text-xs flex items-center justify-between";
+        statusText.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Terhubung ke Database (${DATABASE_USER.length} Akun)`;
+        
+        btnSubmit.disabled = false;
+        btnSubmit.className = "w-full bg-indigo-700 text-white font-bold py-3 rounded-xl hover:bg-indigo-800 transition shadow-lg cursor-pointer";
+        btnSubmit.innerHTML = `Masuk ke Portal <i class="fas fa-arrow-right ml-2"></i>`;
+      } else {
+        statusBox.className = "bg-amber-50 border border-amber-200 text-amber-700 p-3 rounded-xl text-xs flex items-center justify-between";
+        statusText.innerHTML = `<i class="fas fa-exclamation-triangle mr-1"></i> Data akun kosong (0 Akun). Cek tab Users.`;
+      }
     }
 
     window.onload = loadDataJSONP;
@@ -94,7 +102,6 @@
       );
 
       if (foundUser) {
-        // Simpan sesi user ke LocalStorage lalu pindah ke halaman dashboard.html
         localStorage.setItem('session_user', JSON.stringify(foundUser));
         window.location.href = "dashboard.html";
       } else {
