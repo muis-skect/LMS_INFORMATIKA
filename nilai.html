@@ -13,7 +13,7 @@
     <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
       <div class="flex items-center gap-3">
         <div class="bg-indigo-700 p-2 rounded-lg font-bold">LMS</div>
-        <h1 class="text-xl font-bold">Nilai & Rapor Siswa</h1>
+        <h1 class="text-xl font-bold">Daftar Nilai Siswa</h1>
       </div>
       <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">Keluar</button>
     </header>
@@ -28,20 +28,29 @@
 
       <section class="md:col-span-3 space-y-4">
         <div class="bg-white p-6 rounded-xl shadow-sm border">
-          <h3 class="text-lg font-bold mb-4">Transkrip Nilai Akademik</h3>
+          <h3 class="text-lg font-bold mb-4">Nilai Per Materi & Ujian Semester</h3>
           <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 text-slate-600 uppercase text-xs">
+            <table class="w-full text-center text-sm border-collapse">
+              <thead class="bg-slate-100 text-slate-700 uppercase text-xs border-b">
                 <tr>
-                  <th class="p-3">Mata Pelajaran</th>
-                  <th class="p-3">Tugas</th>
-                  <th class="p-3">UTS</th>
-                  <th class="p-3">UAS</th>
-                  <th class="p-3">Rata-Rata</th>
+                  <th class="p-3 text-left border-r" rowspan="2">ID</th>
+                  <th class="p-3 text-left border-r" rowspan="2">Nama</th>
+                  <th class="p-3 border-r" rowspan="2">Kelas</th>
+                  <th class="p-3 text-left border-r" rowspan="2">Mata Pelajaran</th>
+                  <th class="p-3 text-left border-r" rowspan="2">Nama Materi / Tugas</th>
+                  <th class="p-3 border-r bg-indigo-50/50" rowspan="2">Nilai Materi</th>
+                  <th class="p-2 border-r" colspan="2">Semester 1</th>
+                  <th class="p-2" colspan="2">Semester 2</th>
+                </tr>
+                <tr class="border-b bg-slate-50 text-xs">
+                  <th class="p-2">UTS</th>
+                  <th class="p-2 border-r">UAS</th>
+                  <th class="p-2">UTS</th>
+                  <th class="p-2">UAS</th>
                 </tr>
               </thead>
               <tbody id="table-nilai">
-                <tr><td colspan="5" class="p-4 text-center text-slate-400">Memuat data dari Google Sheets...</td></tr>
+                <tr><td colspan="10" class="p-4 text-center text-slate-400">Memuat data dari Google Sheets...</td></tr>
               </tbody>
             </table>
           </div>
@@ -71,23 +80,23 @@
       tbody.innerHTML = '';
 
       if (data.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">Belum ada nilai yang diinput.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="p-4 text-center text-slate-400">Belum ada nilai yang dimasukkan.</td></tr>';
         return;
       }
 
       data.forEach(row => {
-        const t = parseFloat(row.tugas) || 0;
-        const uts = parseFloat(row.uts) || 0;
-        const uas = parseFloat(row.uas) || 0;
-        const avg = ((t + uts + uas) / 3).toFixed(1);
-
         tbody.innerHTML += `
           <tr class="border-b hover:bg-slate-50">
-            <td class="p-3 font-medium">${row.mapel}</td>
-            <td class="p-3">${t}</td>
-            <td class="p-3">${uts}</td>
-            <td class="p-3">${uas}</td>
-            <td class="p-3 font-bold text-indigo-700">${avg}</td>
+            <td class="p-3 text-left font-mono border-r">${row.id}</td>
+            <td class="p-3 text-left font-semibold border-r">${row.nama}</td>
+            <td class="p-3 border-r font-medium text-slate-600">${row.kelas}</td>
+            <td class="p-3 text-left border-r">${row.mapel}</td>
+            <td class="p-3 text-left text-slate-600 border-r">${row.materi}</td>
+            <td class="p-3 font-bold text-indigo-700 bg-indigo-50/30 border-r">${row.nilaiMateri || '-'}</td>
+            <td class="p-3">${row.utsSmt1 || '-'}</td>
+            <td class="p-3 border-r">${row.uasSmt1 || '-'}</td>
+            <td class="p-3">${row.utsSmt2 || '-'}</td>
+            <td class="p-3">${row.uasSmt2 || '-'}</td>
           </tr>
         `;
       });
