@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS Informatika - Dashboard</title>
+  <title>LMS Informatika - Beranda</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -17,8 +17,8 @@
         <h1 class="text-xl font-bold">LMS Informatika Sekolah</h1>
       </div>
       <div class="flex items-center gap-4">
-        <span id="display-role" class="text-sm bg-indigo-800 px-3 py-1 rounded-full">User Mode</span>
-        <div id="display-avatar" class="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center font-bold">U</div>
+        <span id="display-role" class="text-sm bg-indigo-800 px-3 py-1 rounded-full">Siswa Mode</span>
+        <div id="display-avatar" class="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center font-bold">S</div>
         <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">
           <i class="fas fa-sign-out-alt"></i> Keluar
         </button>
@@ -27,15 +27,23 @@
 
     <!-- Main Section -->
     <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Sidebar Navigasi -->
       <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit">
-        <div class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3">
+        <a href="dashboard.html" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3">
           <i class="fas fa-home"></i> Beranda
-        </div>
-        <a href="#" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
-          <i class="fas fa-book"></i> Kelas Saya
+        </a>
+        <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-tasks"></i> Tugas Saya
+        </a>
+        <a href="kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-calendar-check"></i> Kehadiran
+        </a>
+        <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-trophy"></i> Nilai & Rapor
         </a>
       </aside>
 
+      <!-- Konten Beranda -->
       <section class="md:col-span-3 space-y-6">
         <div class="bg-indigo-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
           <div>
@@ -43,16 +51,58 @@
             <p id="welcome-sub" class="text-indigo-200 mt-1">Memuat data...</p>
           </div>
         </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
+            <p class="text-slate-500 text-sm">Tugas</p>
+            <p class="text-2xl font-bold text-slate-800">2</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500">
+            <p class="text-slate-500 text-sm">Kuis / Ujian</p>
+            <p class="text-2xl font-bold text-slate-800">1</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500">
+            <p class="text-slate-500 text-sm">Forum</p>
+            <p class="text-2xl font-bold text-slate-800">6</p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500">
+            <p class="text-slate-500 text-sm">Vicon</p>
+            <p class="text-2xl font-bold text-slate-800">3</p>
+          </div>
+        </div>
+
+        <!-- Mata Pelajaran -->
+        <div>
+          <h3 class="text-lg font-bold mb-4 text-slate-800">Mata Pelajaran Aktif</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
+              <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">Kelas VII</span>
+              <h4 class="font-bold text-lg mt-2">Informatika Dasar</h4>
+              <p class="text-sm text-slate-500 mt-1">Guru: Budi Santoso, S.Pd.</p>
+              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
+                <span class="text-slate-500">12 Modul</span>
+                <a href="materi.html?mapel=Informatika%20Dasar" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
+              <span class="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Kelas VII</span>
+              <h4 class="font-bold text-lg mt-2">Algoritma & Pemrograman</h4>
+              <p class="text-sm text-slate-500 mt-1">Guru: Dr. Maya, M.Si.</p>
+              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
+                <span class="text-slate-500">8 Modul</span>
+                <a href="materi.html?mapel=Algoritma%20dan%20Pemrograman" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
   </div>
 
   <script>
-    // Pengecekan Sesi Login
     const userData = JSON.parse(localStorage.getItem('session_user'));
-
     if (!userData) {
-      alert("Anda belum login!");
       window.location.href = "index.html";
     } else {
       document.getElementById('display-role').innerText = userData.role + " Mode";
