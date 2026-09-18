@@ -3,17 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS Informatika - Login & Dashboard</title>
+  <title>LMS Informatika - Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center p-4">
 
-  <!-- ================= HALAMAN LOGIN ================= -->
-  <div id="login-page" class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden border border-slate-100">
-    
-    <!-- Header Login -->
+  <div class="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden border border-slate-100">
     <div class="bg-indigo-900 text-white p-6 text-center">
       <div class="w-12 h-12 bg-indigo-700 rounded-xl flex items-center justify-center mx-auto mb-3 font-bold text-xl shadow">
         LMS
@@ -22,32 +18,17 @@
       <p class="text-indigo-200 text-sm mt-1">Portal Pembelajaran Digital Sekolah</p>
     </div>
 
-    <!-- Mode Selector Tab -->
-    <div class="flex border-b text-sm font-semibold">
-      <button id="tab-nisn" onclick="switchLoginTab('nisn')" class="flex-1 py-3 text-indigo-700 border-b-2 border-indigo-700 bg-indigo-50/50">
-        <i class="fas fa-key mr-2"></i> NISN / NIP
-      </button>
-      <button id="tab-qr" onclick="switchLoginTab('qr')" class="flex-1 py-3 text-slate-500 border-b-2 border-transparent hover:text-indigo-600">
-        <i class="fas fa-qrcode mr-2"></i> Scan Barcode
-      </button>
-    </div>
-
-    <!-- Body Login Form -->
     <div class="p-6 space-y-5">
-
-      <!-- Status Koneksi Google Sheets -->
       <div id="status-db" class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex items-center justify-between">
         <span id="status-text"><i class="fas fa-spinner fa-spin mr-1"></i> Menghubungkan ke Google Sheets...</span>
       </div>
 
-      <!-- Alert Pesan Error -->
       <div id="login-error" class="hidden bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs flex items-center gap-2">
         <i class="fas fa-exclamation-circle text-base"></i>
         <span id="error-text">NISN/NIP tidak terdaftar!</span>
       </div>
 
-      <!-- Form NISN / NIP -->
-      <form id="form-nisn" onsubmit="handleLogin(event)" class="space-y-4">
+      <form onsubmit="handleLogin(event)" class="space-y-4">
         <div>
           <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Pilih Peran</label>
           <select id="user-role" class="w-full p-3 border rounded-xl bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
@@ -70,226 +51,57 @@
           Memuat Data...
         </button>
       </form>
-
-      <!-- Section Scan Barcode / QR Code -->
-      <div id="form-qr" class="hidden space-y-4 text-center">
-        <div id="reader" class="w-full rounded-xl overflow-hidden border"></div>
-        <p class="text-xs text-slate-500">Arahkan QR Code Kartu Pelajar ke kamera</p>
-      </div>
-
     </div>
   </div>
 
-  <!-- ================= HALAMAN DASHBOARD ================= -->
-  <div id="dashboard-page" class="hidden w-full max-w-7xl mx-auto min-h-screen">
-    
-    <!-- Navbar -->
-    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
-      <div class="flex items-center gap-3">
-        <div class="bg-indigo-700 p-2 rounded-lg font-bold">LMS</div>
-        <h1 class="text-xl font-bold">LMS Informatika Sekolah</h1>
-      </div>
-      <div class="flex items-center gap-4">
-        <span id="display-role" class="text-sm bg-indigo-800 px-3 py-1 rounded-full">Siswa Mode</span>
-        <div id="display-avatar" class="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center font-bold">S</div>
-        <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">
-          <i class="fas fa-sign-out-alt"></i> Keluar
-        </button>
-      </div>
-    </header>
-
-    <!-- Content Dashboard -->
-    <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      
-      <!-- Sidebar -->
-      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit">
-        <div class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3">
-          <i class="fas fa-home"></i> Beranda
-        </div>
-        <a href="#" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
-          <i class="fas fa-book"></i> Kelas Saya
-        </a>
-        <a href="#" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
-          <i class="fas fa-calendar-check"></i> Kehadiran
-        </a>
-        <a href="#" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
-          <i class="fas fa-trophy"></i> Nilai & Rapor
-        </a>
-      </aside>
-
-      <!-- Main Section -->
-      <section class="md:col-span-3 space-y-6">
-        
-        <!-- Banner Selamat Datang -->
-        <div class="bg-indigo-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
-          <div>
-            <h2 id="welcome-title" class="text-2xl font-bold">Selamat Datang!</h2>
-            <p id="welcome-sub" class="text-indigo-200 mt-1">ID: <span id="display-id" class="font-mono bg-indigo-800 px-2 py-0.5 rounded">-</span></p>
-          </div>
-          <button class="bg-white text-indigo-900 px-4 py-2 rounded-lg font-bold hover:bg-indigo-50">
-            Lihat Jadwal
-          </button>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500">
-            <p class="text-slate-500 text-sm">Tugas</p>
-            <p class="text-2xl font-bold text-slate-800">2</p>
-          </div>
-          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500">
-            <p class="text-slate-500 text-sm">Kuis / Ujian</p>
-            <p class="text-2xl font-bold text-slate-800">1</p>
-          </div>
-          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500">
-            <p class="text-slate-500 text-sm">Forum Discussion</p>
-            <p class="text-2xl font-bold text-slate-800">6</p>
-          </div>
-          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500">
-            <p class="text-slate-500 text-sm">Vicon</p>
-            <p class="text-2xl font-bold text-slate-800">3</p>
-          </div>
-        </div>
-
-        <!-- Daftar Kelas -->
-        <div>
-          <h3 class="text-lg font-bold mb-4 text-slate-800">Mata Pelajaran Aktif</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
-              <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">Kelas X</span>
-              <h4 class="font-bold text-lg mt-2">Informatika Dasar</h4>
-              <p class="text-sm text-slate-500 mt-1">Guru: Budi Santoso, S.Pd.</p>
-              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
-                <span class="text-slate-500">12 Modul</span>
-                <a href="#" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>
-              </div>
-            </div>
-
-            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
-              <span class="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Kelas XI</span>
-              <h4 class="font-bold text-lg mt-2">Algoritma & Pemrograman</h4>
-              <p class="text-sm text-slate-500 mt-1">Guru: Dr. Maya, M.Si.</p>
-              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
-                <span class="text-slate-500">8 Modul</span>
-                <a href="#" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </section>
-
-    </main>
-
-  </div>
-
-  <!-- JavaScript Google Sheets API & Auth -->
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
     let DATABASE_USER = [];
-    let html5QrcodeScanner = null;
 
-    // Ambil data langsung dari Google Sheets
-    async function loadDatabaseFromSpreadsheet() {
+    // Menggunakan Script Tag Injection untuk menghindari Blokir CORS
+    function loadDataJSONP() {
+      const script = document.createElement('script');
+      script.src = `${GOOGLE_SCRIPT_URL}?callback=handleDataResponse`;
+      document.body.appendChild(script);
+    }
+
+    function handleDataResponse(data) {
+      DATABASE_USER = data;
       const statusBox = document.getElementById('status-db');
       const statusText = document.getElementById('status-text');
       const btnSubmit = document.getElementById('btn-submit');
 
-      try {
-        const response = await fetch(GOOGLE_SCRIPT_URL);
-        const data = await response.json();
-        DATABASE_USER = data;
-
-        statusBox.className = "bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-xl text-xs flex items-center justify-between";
-        statusText.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Terhubung ke Google Sheets (${DATABASE_USER.length} Akun)`;
-        
-        btnSubmit.disabled = false;
-        btnSubmit.className = "w-full bg-indigo-700 text-white font-bold py-3 rounded-xl hover:bg-indigo-800 transition shadow-lg shadow-indigo-200 cursor-pointer";
-        btnSubmit.innerHTML = `Masuk ke Portal <i class="fas fa-arrow-right ml-2"></i>`;
-      } catch (error) {
-        console.error("Gagal mengambil data:", error);
-        statusBox.className = "bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs flex items-center justify-between";
-        statusText.innerHTML = `<i class="fas fa-times-circle mr-1"></i> Gagal terhubung ke Google Sheets`;
-      }
+      statusBox.className = "bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-xl text-xs flex items-center justify-between";
+      statusText.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Terhubung ke Database (${DATABASE_USER.length} Akun)`;
+      
+      btnSubmit.disabled = false;
+      btnSubmit.className = "w-full bg-indigo-700 text-white font-bold py-3 rounded-xl hover:bg-indigo-800 transition shadow-lg cursor-pointer";
+      btnSubmit.innerHTML = `Masuk ke Portal <i class="fas fa-arrow-right ml-2"></i>`;
     }
 
-    window.onload = loadDatabaseFromSpreadsheet;
-
-    function switchLoginTab(tab) {
-      document.getElementById('login-error').classList.add('hidden');
-      const formNisn = document.getElementById('form-nisn');
-      const formQr = document.getElementById('form-qr');
-      const tabNisn = document.getElementById('tab-nisn');
-      const tabQr = document.getElementById('tab-qr');
-
-      if (tab === 'nisn') {
-        formNisn.classList.remove('hidden');
-        formQr.classList.add('hidden');
-        tabNisn.className = "flex-1 py-3 text-indigo-700 border-b-2 border-indigo-700 bg-indigo-50/50";
-        tabQr.className = "flex-1 py-3 text-slate-500 border-b-2 border-transparent hover:text-indigo-600";
-        if(html5QrcodeScanner) html5QrcodeScanner.clear();
-      } else {
-        formNisn.classList.add('hidden');
-        formQr.classList.remove('hidden');
-        tabQr.className = "flex-1 py-3 text-indigo-700 border-b-2 border-indigo-700 bg-indigo-50/50";
-        tabNisn.className = "flex-1 py-3 text-slate-500 border-b-2 border-transparent hover:text-indigo-600";
-        initQRScanner();
-      }
-    }
-
-    function initQRScanner() {
-      html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
-      html5QrcodeScanner.render((decodedText) => {
-        html5QrcodeScanner.clear();
-        validasiLogin("Siswa", decodedText);
-      });
-    }
+    window.onload = loadDataJSONP;
 
     function handleLogin(e) {
       e.preventDefault();
       const role = document.getElementById('user-role').value;
       const inputId = document.getElementById('input-nisn').value.trim();
-      validasiLogin(role, inputId);
-    }
-
-    function validasiLogin(role, idInput) {
       const errorBox = document.getElementById('login-error');
       const errorText = document.getElementById('error-text');
-      
-      // Pencocokan data dengan Google Sheets
+
       const foundUser = DATABASE_USER.find(user => 
         String(user.role).toLowerCase() === role.toLowerCase() && 
-        String(user.id).trim() === String(idInput).trim()
+        String(user.id).trim() === String(inputId).trim()
       );
 
       if (foundUser) {
-        errorBox.classList.add('hidden');
-        berhasilLogin(role, foundUser);
+        // Simpan sesi user ke LocalStorage lalu pindah ke halaman dashboard.html
+        localStorage.setItem('session_user', JSON.stringify(foundUser));
+        window.location.href = "dashboard.html";
       } else {
-        errorText.innerText = `${role} dengan Nomor ${idInput} tidak ditemukan di Google Sheets!`;
+        errorText.innerText = `${role} dengan Nomor ${inputId} tidak terdaftar!`;
         errorBox.classList.remove('hidden');
       }
     }
-
-    function berhasilLogin(role, userData) {
-      document.body.className = "bg-slate-100 text-slate-800 font-sans min-h-screen p-4";
-      document.getElementById('login-page').classList.add('hidden');
-      document.getElementById('dashboard-page').classList.remove('hidden');
-      
-      document.getElementById('display-role').innerText = role + " Mode";
-      document.getElementById('display-avatar').innerText = userData.nama[0];
-      document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
-      document.getElementById('welcome-sub').innerText = `ID: ${userData.id} | ${userData.detail}`;
-      document.getElementById('display-id').innerText = userData.id;
-    }
-
-    function logout() {
-      document.body.className = "bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center p-4";
-      document.getElementById('dashboard-page').classList.add('hidden');
-      document.getElementById('login-page').classList.remove('hidden');
-      document.getElementById('login-error').classList.add('hidden');
-    }
   </script>
-
 </body>
 </html>
