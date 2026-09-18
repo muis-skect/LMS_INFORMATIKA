@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS Informatika - Login</title>
+  <title>LMS Informatika - Login & Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-  <!-- Library Kamera QR/Barcode -->
   <script src="https://unpkg.com/html5-qrcode"></script>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center p-4">
@@ -36,6 +35,17 @@
     <!-- Body Login Form -->
     <div class="p-6 space-y-5">
 
+      <!-- Status Koneksi Google Sheets -->
+      <div id="status-db" class="bg-blue-50 border border-blue-200 text-blue-700 p-3 rounded-xl text-xs flex items-center justify-between">
+        <span id="status-text"><i class="fas fa-spinner fa-spin mr-1"></i> Menghubungkan ke Google Sheets...</span>
+      </div>
+
+      <!-- Alert Pesan Error -->
+      <div id="login-error" class="hidden bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs flex items-center gap-2">
+        <i class="fas fa-exclamation-circle text-base"></i>
+        <span id="error-text">NISN/NIP tidak terdaftar!</span>
+      </div>
+
       <!-- Form NISN / NIP -->
       <form id="form-nisn" onsubmit="handleLogin(event)" class="space-y-4">
         <div>
@@ -50,15 +60,14 @@
         <div>
           <label class="block text-xs font-bold text-slate-600 uppercase mb-2">Nomor Induk (NISN / NIP)</label>
           <div class="relative">
-            <i class="fas fa-user absolute left-4 top-3,5 text-slate-400"></i>
-            <input type="text" id="input-nisn" required placeholder="Contoh: 123456789" value="123456789"
+            <i class="fas fa-user absolute left-4 top-3.5 text-slate-400"></i>
+            <input type="text" id="input-nisn" required placeholder="Masukkan NISN / NIP"
               class="w-full pl-11 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none">
           </div>
-          <p class="text-[11px] text-slate-400 mt-1">*Bisa langsung klik Masuk (Demo NISN: 123456789)</p>
         </div>
 
-        <button type="submit" class="w-full bg-indigo-700 text-white font-bold py-3 rounded-xl hover:bg-indigo-800 transition shadow-lg shadow-indigo-200">
-          Masuk ke Portal <i class="fas fa-arrow-right ml-2"></i>
+        <button type="submit" id="btn-submit" disabled class="w-full bg-slate-400 text-white font-bold py-3 rounded-xl cursor-not-allowed transition shadow-lg">
+          Memuat Data...
         </button>
       </form>
 
@@ -66,15 +75,12 @@
       <div id="form-qr" class="hidden space-y-4 text-center">
         <div id="reader" class="w-full rounded-xl overflow-hidden border"></div>
         <p class="text-xs text-slate-500">Arahkan QR Code Kartu Pelajar ke kamera</p>
-        <button type="button" onclick="simulasiScanQR()" class="w-full bg-emerald-600 text-white font-bold py-2,5 rounded-xl hover:bg-emerald-700 transition text-sm">
-          Simulasi Scan QR Sukses
-        </button>
       </div>
 
     </div>
   </div>
 
-  <!-- ================= HALAMAN DASHBOARD (DILINDUNGI LOGIN) ================= -->
+  <!-- ================= HALAMAN DASHBOARD ================= -->
   <div id="dashboard-page" class="hidden w-full max-w-7xl mx-auto min-h-screen">
     
     <!-- Navbar -->
@@ -117,8 +123,8 @@
         <!-- Banner Selamat Datang -->
         <div class="bg-indigo-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
           <div>
-            <h2 id="welcome-text" class="text-2xl font-bold">Selamat Datang di Portal LMS!</h2>
-            <p class="text-indigo-200 mt-1">NISN Terverifikasi: <span id="display-nisn" class="font-mono bg-indigo-800 px-2 py-0,5 rounded">123456789</span></p>
+            <h2 id="welcome-title" class="text-2xl font-bold">Selamat Datang!</h2>
+            <p id="welcome-sub" class="text-indigo-200 mt-1">ID: <span id="display-id" class="font-mono bg-indigo-800 px-2 py-0.5 rounded">-</span></p>
           </div>
           <button class="bg-white text-indigo-900 px-4 py-2 rounded-lg font-bold hover:bg-indigo-50">
             Lihat Jadwal
@@ -147,7 +153,7 @@
 
         <!-- Daftar Kelas -->
         <div>
-          <h3 class="text-lg font-bold mb-4 text-slate-800">Mata Pelajaran</h3>
+          <h3 class="text-lg font-bold mb-4 text-slate-800">Mata Pelajaran Aktif</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
               <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">Kelas X</span>
@@ -177,11 +183,40 @@
 
   </div>
 
-  <!-- JavaScript Logic Login & QR Code -->
+  <!-- JavaScript Google Sheets API & Auth -->
   <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
+    let DATABASE_USER = [];
     let html5QrcodeScanner = null;
 
+    // Ambil data langsung dari Google Sheets
+    async function loadDatabaseFromSpreadsheet() {
+      const statusBox = document.getElementById('status-db');
+      const statusText = document.getElementById('status-text');
+      const btnSubmit = document.getElementById('btn-submit');
+
+      try {
+        const response = await fetch(GOOGLE_SCRIPT_URL);
+        const data = await response.json();
+        DATABASE_USER = data;
+
+        statusBox.className = "bg-emerald-50 border border-emerald-200 text-emerald-700 p-3 rounded-xl text-xs flex items-center justify-between";
+        statusText.innerHTML = `<i class="fas fa-check-circle mr-1"></i> Terhubung ke Google Sheets (${DATABASE_USER.length} Akun)`;
+        
+        btnSubmit.disabled = false;
+        btnSubmit.className = "w-full bg-indigo-700 text-white font-bold py-3 rounded-xl hover:bg-indigo-800 transition shadow-lg shadow-indigo-200 cursor-pointer";
+        btnSubmit.innerHTML = `Masuk ke Portal <i class="fas fa-arrow-right ml-2"></i>`;
+      } catch (error) {
+        console.error("Gagal mengambil data:", error);
+        statusBox.className = "bg-rose-50 border border-rose-200 text-rose-700 p-3 rounded-xl text-xs flex items-center justify-between";
+        statusText.innerHTML = `<i class="fas fa-times-circle mr-1"></i> Gagal terhubung ke Google Sheets`;
+      }
+    }
+
+    window.onload = loadDatabaseFromSpreadsheet;
+
     function switchLoginTab(tab) {
+      document.getElementById('login-error').classList.add('hidden');
       const formNisn = document.getElementById('form-nisn');
       const formQr = document.getElementById('form-qr');
       const tabNisn = document.getElementById('tab-nisn');
@@ -206,37 +241,53 @@
       html5QrcodeScanner = new Html5QrcodeScanner("reader", { fps: 10, qrbox: 200 });
       html5QrcodeScanner.render((decodedText) => {
         html5QrcodeScanner.clear();
-        berhasilLogin("Siswa", decodedText);
+        validasiLogin("Siswa", decodedText);
       });
-    }
-
-    function simulasiScanQR() {
-      if(html5QrcodeScanner) html5QrcodeScanner.clear();
-      berhasilLogin("Siswa", "123456789");
     }
 
     function handleLogin(e) {
       e.preventDefault();
       const role = document.getElementById('user-role').value;
-      const nisn = document.getElementById('input-nisn').value;
-      berhasilLogin(role, nisn);
+      const inputId = document.getElementById('input-nisn').value.trim();
+      validasiLogin(role, inputId);
     }
 
-    function berhasilLogin(role, nisn) {
+    function validasiLogin(role, idInput) {
+      const errorBox = document.getElementById('login-error');
+      const errorText = document.getElementById('error-text');
+      
+      // Pencocokan data dengan Google Sheets
+      const foundUser = DATABASE_USER.find(user => 
+        String(user.role).toLowerCase() === role.toLowerCase() && 
+        String(user.id).trim() === String(idInput).trim()
+      );
+
+      if (foundUser) {
+        errorBox.classList.add('hidden');
+        berhasilLogin(role, foundUser);
+      } else {
+        errorText.innerText = `${role} dengan Nomor ${idInput} tidak ditemukan di Google Sheets!`;
+        errorBox.classList.remove('hidden');
+      }
+    }
+
+    function berhasilLogin(role, userData) {
       document.body.className = "bg-slate-100 text-slate-800 font-sans min-h-screen p-4";
       document.getElementById('login-page').classList.add('hidden');
       document.getElementById('dashboard-page').classList.remove('hidden');
       
       document.getElementById('display-role').innerText = role + " Mode";
-      document.getElementById('display-avatar').innerText = role[0];
-      document.getElementById('welcome-text').innerText = "Selamat Datang, " + role + "!";
-      document.getElementById('display-nisn').innerText = nisn;
+      document.getElementById('display-avatar').innerText = userData.nama[0];
+      document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
+      document.getElementById('welcome-sub').innerText = `ID: ${userData.id} | ${userData.detail}`;
+      document.getElementById('display-id').innerText = userData.id;
     }
 
     function logout() {
       document.body.className = "bg-slate-100 text-slate-800 font-sans min-h-screen flex items-center justify-center p-4";
       document.getElementById('dashboard-page').classList.add('hidden');
       document.getElementById('login-page').classList.remove('hidden');
+      document.getElementById('login-error').classList.add('hidden');
     }
   </script>
 
