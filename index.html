@@ -34,8 +34,8 @@
   </div>
 
   <script>
-    // PASTI KAN MENGGUNAKAN URL APPS SCRIPT (AKfycb...), BUKAN ID SPREADSHEET
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/PASTE_URL_APPS_SCRIPT_DISINI/exec"; 
+    // URL Deployment Web App Apps Script Resmi
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
 
     function handleLogin(e) {
       e.preventDefault();
@@ -53,7 +53,9 @@
       
       window[callbackName] = function(users) {
         delete window[callbackName];
-        document.body.removeChild(script);
+        if (script.parentNode) {
+          document.body.removeChild(script);
+        }
 
         const foundUser = users.find(u => String(u.id).trim() === idInput);
 
