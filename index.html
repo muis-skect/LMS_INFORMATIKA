@@ -34,7 +34,8 @@
   </div>
 
   <script>
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/1lVWJWXbY6CEnz_jtyT0OJnLEYt_on31F3cr3ZeDCNYQ/exec"; // Masukkan URL Deploy Apps Script Anda
+    // PASTI KAN MENGGUNAKAN URL APPS SCRIPT (AKfycb...), BUKAN ID SPREADSHEET
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/PASTE_URL_APPS_SCRIPT_DISINI/exec"; 
 
     function handleLogin(e) {
       e.preventDefault();
@@ -54,7 +55,7 @@
         delete window[callbackName];
         document.body.removeChild(script);
 
-        const foundUser = users.find(u => u.id === idInput);
+        const foundUser = users.find(u => String(u.id).trim() === idInput);
 
         if (foundUser) {
           localStorage.setItem('session_user', JSON.stringify(foundUser));
