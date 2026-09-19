@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LMS Informatika - Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Library FontAwesome untuk Ikon -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <!-- Library Scan QR / Barcode -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 <body class="bg-indigo-900 min-h-screen flex items-center justify-center p-4">
 
@@ -17,36 +21,133 @@
       <p class="text-slate-500 text-sm mt-1">Masuk dengan ID / NISN Anda</p>
     </div>
 
-    <form onsubmit="handleLogin(event)" class="space-y-4">
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">ID / NISN</label>
-        <input type="text" id="user-id" placeholder="Masukkan ID / NISN" required
-          class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none text-slate-800">
+    <!-- Pilihan Tab Metode Login -->
+    <div class="flex border-b mb-6">
+      <button id="tab-manual-btn" onclick="switchTab('manual')" class="w-1/2 py-2 text-center font-bold text-indigo-600 border-b-2 border-indigo-600 focus:outline-none">
+        <i class="fas fa-keyboard mr-1"></i> Ketik ID
+      </button>
+      <button id="tab-scan-btn" onclick="switchTab('scan')" class="w-1/2 py-2 text-center font-bold text-slate-400 border-b-2 border-transparent hover:text-indigo-600 focus:outline-none">
+        <i class="fas fa-qrcode mr-1"></i> Scan Barcode
+      </button>
+    </div>
+
+    <!-- FORM INPUT MANUAL -->
+    <div id="tab-manual">
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">ID / NISN Siswa</label>
+          <input type="text" id="user-id" placeholder="Masukkan ID / NISN" required
+            class="w-full px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-600 focus:outline-none text-slate-800">
+        </div>
+
+        <button type="submit" id="btn-login"
+          class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-md">
+          Masuk
+        </button>
+      </form>
+    </div>
+
+    <!-- AREA SCANNER KAMERA -->
+    <div id="tab-scan" class="hidden text-center space-y-4">
+      <p class="text-xs text-slate-500">Arahkan QR Code / Barcode Kartu Siswa ke kamera</p>
+      
+      <div class="overflow-hidden rounded-2xl border-2 border-dashed border-indigo-300 p-2 bg-slate-50">
+        <div id="reader" class="w-full"></div>
       </div>
 
-      <button type="submit" id="btn-login"
-        class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition shadow-md">
-        Masuk
+      <button id="btn-toggle-cam" onclick="toggleCamera()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-sm transition">
+        <i class="fas fa-camera mr-1"></i> Buka Kamera
       </button>
-    </form>
+    </div>
 
+    <!-- STATUS LOGIN -->
     <div id="login-status" class="mt-4 text-center text-sm font-semibold hidden"></div>
   </div>
 
   <script>
-    // URL Deployment Web App Apps Script Resmi
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
+    
+    let html5QrcodeScanner = null;
+    let isCameraActive = false;
 
+    // Navigasi Tab
+    function switchTab(tab) {
+      const tabManual = document.getElementById('tab-manual');
+      const tabScan = document.getElementById('tab-scan');
+      const btnManual = document.getElementById('tab-manual-btn');
+      const btnScan = document.getElementById('tab-scan-btn');
+
+      if (tab === 'manual') {
+        tabManual.classList.remove('hidden');
+        tabScan.classList.add('hidden');
+        btnManual.className = "w-1/2 py-2 text-center font-bold text-indigo-600 border-b-2 border-indigo-600 focus:outline-none";
+        btnScan.className = "w-1/2 py-2 text-center font-bold text-slate-400 border-b-2 border-transparent hover:text-indigo-600 focus:outline-none";
+        stopScanner();
+      } else {
+        tabManual.classList.add('hidden');
+        tabScan.classList.remove('hidden');
+        btnScan.className = "w-1/2 py-2 text-center font-bold text-indigo-600 border-b-2 border-indigo-600 focus:outline-none";
+        btnManual.className = "w-1/2 py-2 text-center font-bold text-slate-400 border-b-2 border-transparent hover:text-indigo-600 focus:outline-none";
+      }
+    }
+
+    // Toggle Kamera
+    function toggleCamera() {
+      if (isCameraActive) {
+        stopScanner();
+      } else {
+        startScanner();
+      }
+    }
+
+    function startScanner() {
+      html5QrcodeScanner = new Html5Qrcode("reader");
+      const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+
+      html5QrcodeScanner.start(
+        { facingMode: "environment" },
+        config,
+        onScanSuccess
+      ).then(() => {
+        isCameraActive = true;
+        document.getElementById('btn-toggle-cam').innerHTML = '<i class="fas fa-video-slash mr-1"></i> Matikan Kamera';
+      }).catch(err => {
+        alert("Gagal mengakses kamera. Pastikan izin kamera telah diaktifkan.");
+      });
+    }
+
+    function stopScanner() {
+      if (html5QrcodeScanner && isCameraActive) {
+        html5QrcodeScanner.stop().then(() => {
+          html5QrcodeScanner.clear();
+          isCameraActive = false;
+          document.getElementById('btn-toggle-cam').innerHTML = '<i class="fas fa-camera mr-1"></i> Buka Kamera';
+        }).catch(err => console.error(err));
+      }
+    }
+
+    // Hasil Scan Barcode Berhasil
+    function onScanSuccess(decodedText) {
+      stopScanner();
+      processLogin(decodedText.trim());
+    }
+
+    // Handle Form Input Manual
     function handleLogin(e) {
       e.preventDefault();
       const idInput = document.getElementById('user-id').value.trim();
+      processLogin(idInput);
+    }
+
+    // Eksekusi Login ke Apps Script
+    function processLogin(idUser) {
       const statusEl = document.getElementById('login-status');
       const btnLogin = document.getElementById('btn-login');
 
       statusEl.className = "mt-4 text-center text-sm font-semibold text-indigo-600";
-      statusEl.innerText = "Memverifikasi...";
+      statusEl.innerText = "Memverifikasi data...";
       statusEl.classList.remove('hidden');
-      btnLogin.disabled = true;
+      if (btnLogin) btnLogin.disabled = true;
 
       const script = document.createElement('script');
       const callbackName = 'onUsersReceived_' + Math.round(Math.random() * 100000);
@@ -57,20 +158,20 @@
           document.body.removeChild(script);
         }
 
-        const foundUser = users.find(u => String(u.id).trim() === idInput);
+        const foundUser = users.find(u => String(u.id).trim() === idUser);
 
         if (foundUser) {
           localStorage.setItem('session_user', JSON.stringify(foundUser));
           statusEl.className = "mt-4 text-center text-sm font-semibold text-emerald-600";
-          statusEl.innerText = "Berhasil masuk!";
+          statusEl.innerText = "Berhasil masuk! Mengalihkan...";
           
           setTimeout(() => {
             window.location.href = "dashboard.html";
           }, 500);
         } else {
           statusEl.className = "mt-4 text-center text-sm font-semibold text-red-600";
-          statusEl.innerText = "ID / NISN tidak ditemukan!";
-          btnLogin.disabled = false;
+          statusEl.innerText = "ID / NISN (" + idUser + ") tidak ditemukan!";
+          if (btnLogin) btnLogin.disabled = false;
         }
       };
 
@@ -78,7 +179,7 @@
       script.onerror = function() {
         statusEl.className = "mt-4 text-center text-sm font-semibold text-red-600";
         statusEl.innerText = "Gagal terhubung ke server!";
-        btnLogin.disabled = false;
+        if (btnLogin) btnLogin.disabled = false;
       };
       document.body.appendChild(script);
     }
