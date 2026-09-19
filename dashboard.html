@@ -18,7 +18,15 @@
       </div>
       <div class="flex items-center gap-4">
         <span id="display-role" class="text-sm bg-indigo-800 px-3 py-1 rounded-full">Siswa Mode</span>
-        <div id="display-avatar" class="w-9 h-9 rounded-full bg-indigo-500 flex items-center justify-center font-bold">S</div>
+        
+        <!-- Avatar Foto yang Bisa Diklik -->
+        <button onclick="openProfileModal()" title="Klik untuk lihat profil" class="relative group focus:outline-none">
+          <div id="display-avatar-bg" class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold overflow-hidden border-2 border-indigo-300 group-hover:border-white transition">
+            <img id="display-avatar-img" src="" alt="Profil" class="w-full h-full object-cover hidden">
+            <span id="display-avatar-text" class="text-white">S</span>
+          </div>
+        </button>
+
         <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">
           <i class="fas fa-sign-out-alt"></i> Keluar
         </button>
@@ -100,15 +108,84 @@
     </main>
   </div>
 
+  <!-- MODAL POPUP PROFIL SISWA -->
+  <div id="modal-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border">
+      <div class="bg-indigo-900 p-6 text-center text-white relative">
+        <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-lg">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="w-24 h-24 mx-auto rounded-full bg-indigo-700 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl font-bold mb-2">
+          <img id="modal-foto" src="" alt="Foto Siswa" class="w-full h-full object-cover hidden">
+          <span id="modal-initial" class="text-white">S</span>
+        </div>
+        <h3 id="modal-nama" class="font-bold text-lg">Nama Siswa</h3>
+        <span id="modal-role" class="text-xs bg-indigo-700 px-2.5 py-1 rounded-full text-indigo-100 mt-1 inline-block">Siswa</span>
+      </div>
+      <div class="p-6 space-y-3 text-sm">
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-id-card text-indigo-600 mr-2"></i>NISN / NIP</span>
+          <span id="modal-id" class="font-bold font-mono text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>Kelas</span>
+          <span id="modal-kelas" class="font-semibold text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between pb-1">
+          <span class="text-slate-500"><i class="fas fa-birthday-cake text-indigo-600 mr-2"></i>Tanggal Lahir</span>
+          <span id="modal-tgl" class="font-semibold text-slate-800">-</span>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-50 border-t text-center">
+        <button onclick="closeProfileModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const userData = JSON.parse(localStorage.getItem('session_user'));
+
     if (!userData) {
       window.location.href = "index.html";
     } else {
       document.getElementById('display-role').innerText = userData.role + " Mode";
-      document.getElementById('display-avatar').innerText = userData.nama[0];
       document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
-      document.getElementById('welcome-sub').innerText = `ID: ${userData.id} | ${userData.detail}`;
+      document.getElementById('welcome-sub').innerText = `ID: ${userData.id} | ${userData.kelas || userData.detail}`;
+
+      // Render Avatar Topbar
+      if (userData.foto && userData.foto.trim() !== "") {
+        document.getElementById('display-avatar-img').src = userData.foto;
+        document.getElementById('display-avatar-img').classList.remove('hidden');
+        document.getElementById('display-avatar-text').classList.add('hidden');
+      } else {
+        document.getElementById('display-avatar-text').innerText = userData.nama[0];
+      }
+    }
+
+    function openProfileModal() {
+      document.getElementById('modal-nama').innerText = userData.nama;
+      document.getElementById('modal-role').innerText = userData.role;
+      document.getElementById('modal-id').innerText = userData.id;
+      document.getElementById('modal-kelas').innerText = userData.kelas || userData.detail || '-';
+      document.getElementById('modal-tgl').innerText = userData.tglLahir || '-';
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        document.getElementById('modal-foto').src = userData.foto;
+        document.getElementById('modal-foto').classList.remove('hidden');
+        document.getElementById('modal-initial').classList.add('hidden');
+      } else {
+        document.getElementById('modal-initial').innerText = userData.nama[0];
+        document.getElementById('modal-foto').classList.add('hidden');
+        document.getElementById('modal-initial').classList.remove('hidden');
+      }
+
+      document.getElementById('modal-profile').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('modal-profile').classList.add('hidden');
     }
 
     function logout() {
