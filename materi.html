@@ -9,11 +9,11 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
 
-  <div class="w-full max-w-7xl mx-auto">
+  <div class="w-full max-w-7xl mx-auto space-y-6">
     <!-- Navbar Topbar -->
-    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl">
       <div class="flex items-center gap-3">
-        <div class="bg-indigo-600 px-3 py-1 rounded-lg font-bold">LMS</div>
+        <div class="bg-indigo-600 px-3 py-1 rounded-lg font-bold text-xs uppercase">LMS</div>
         <h1 class="text-xl font-bold">LMS Informatika Sekolah</h1>
       </div>
       <div class="flex items-center gap-4">
@@ -105,7 +105,6 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
     const user = JSON.parse(localStorage.getItem('session_user')) || { nama: 'Pengguna', role: 'Siswa' };
     
-    // Tangkap nama Mata Pelajaran dari URL query (?mapel=Informatika%20Dasar)
     const urlParams = new URLSearchParams(window.location.search);
     const selectedMapel = urlParams.get('mapel') || 'Informatika Dasar';
 
@@ -113,16 +112,18 @@
     document.getElementById('judul-mapel').innerHTML = `<i class="fas fa-book-open"></i> ${selectedMapel}`;
     document.getElementById('m-mapel').value = selectedMapel;
 
+    // Tampilkan tombol Tambah Materi jika Guru/Admin
     if (user.role === 'Guru' || user.role === 'Admin') {
       document.getElementById('btn-tambah').classList.remove('hidden');
     }
 
-    // Sidebar
+    // Dynamic Sidebar Navigasi
     const sidebar = document.getElementById('sidebar-nav');
     if (user.role === 'Siswa') {
       sidebar.innerHTML = `
         <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-home"></i> Beranda</a>
         <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
+        <a href="materi.html?mapel=Informatika%20Dasar" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Materi Pembelajaran</a>
         <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Tugas Saya</a>
         <a href="kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-calendar-check"></i> Kehadiran</a>
         <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Nilai & Rapor</a>
@@ -131,6 +132,7 @@
       sidebar.innerHTML = `
         <a href="dashboard-guru.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-chalkboard-teacher"></i> Beranda Guru</a>
         <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
+        <a href="materi.html?mapel=Informatika%20Dasar" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Kelola Materi</a>
         <a href="kelola-tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Kelola Tugas</a>
         <a href="kelola-latihan.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-pen-nib"></i> Kelola Latihan</a>
         <a href="kelola-ujian.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-file-signature"></i> Kelola Ujian CP</a>
@@ -139,7 +141,7 @@
       `;
     }
 
-    // Ambil Data Materi dari Google Sheets
+    // Ambil Data Materi dari Spreadsheet
     function fetchMateri() {
       const callbackName = 'onMateriReceived_' + Math.round(Math.random() * 100000);
       const script = document.createElement('script');
@@ -151,7 +153,6 @@
         const container = document.getElementById('container-materi');
         container.innerHTML = '';
 
-        // Filter Materi Sesuai Mata Pelajaran yang Dibuka
         const filteredMateri = (data || []).filter(item => item.mapel.toLowerCase() === selectedMapel.toLowerCase());
 
         if (filteredMateri.length === 0) {
@@ -162,11 +163,10 @@
         filteredMateri.forEach(item => {
           const tombolHapus = (user.role === 'Guru' || user.role === 'Admin') 
             ? `<button onclick="hapusMateri('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold border border-red-200 bg-red-50 px-2.5 py-1 rounded-lg transition">
-                 <i class="fas fa-trash-alt"></i> Hapus Modul
+                 <i class="fas fa-trash-alt"></i> Hapus
                </button>`
             : '';
 
-          // Tombol Akses File PDF, PPT, Video
           const btnPdf = item.urlPdf ? `<a href="${item.urlPdf}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-100 transition"><i class="fas fa-file-pdf text-red-600"></i> Buka PDF</a>` : '';
           const btnPpt = item.urlPpt ? `<a href="${item.urlPpt}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold hover:bg-amber-100 transition"><i class="fas fa-file-powerpoint text-amber-600"></i> Buka PPT</a>` : '';
           const btnVideo = item.urlVideo ? `<a href="${item.urlVideo}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-xs font-bold hover:bg-blue-100 transition"><i class="fab fa-youtube text-red-600"></i> Tonton Video</a>` : '';
