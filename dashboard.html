@@ -76,7 +76,7 @@
           </a>
           <a href="pengumuman.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500 border hover:shadow-md hover:-translate-y-0.5 transition block">
             <p class="text-slate-500 text-sm font-medium">Pemberitahuan</p>
-            <p id="count-pemberitahuan" class="text-2xl font-bold text-slate-800 mt-1">2</p>
+            <p id="count-pemberitahuan" class="text-2xl font-bold text-slate-800 mt-1">...</p>
           </a>
         </div>
 
@@ -146,6 +146,7 @@
   </div>
 
   <script>
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
     const userData = JSON.parse(localStorage.getItem('session_user'));
 
     if (!userData) {
@@ -163,21 +164,21 @@
       document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
       document.getElementById('welcome-sub').innerText = `ID: ${userData.id} | ${userData.kelas || userData.detail}`;
 
-      // Hitung item yang belum dikerjakan/dibaca
+      // Hitung item tugas, latihan, ujian lokal
       const completedTasks = JSON.parse(localStorage.getItem('completed_tugas') || '[]');
       const completedLatihan = JSON.parse(localStorage.getItem('completed_latihan') || '[]');
       const completedUjian = JSON.parse(localStorage.getItem('completed_ujian') || '[]');
-      const readPengumuman = JSON.parse(localStorage.getItem('read_pengumuman') || '[]');
 
       const totalTugas = 2;
       const totalLatihan = 2;
       const totalUjian = 1;
-      const totalPengumuman = 2;
 
       document.getElementById('count-tugas').innerText = Math.max(0, totalTugas - completedTasks.length);
       document.getElementById('count-latihan').innerText = Math.max(0, totalLatihan - completedLatihan.length);
       document.getElementById('count-ujian').innerText = Math.max(0, totalUjian - completedUjian.length);
-      document.getElementById('count-pemberitahuan').innerText = Math.max(0, totalPengumuman - readPengumuman.length);
+
+      // Ambil jumlah pemberitahuan secara langsung dari Google Sheets
+      fetchPemberitahuanCount();
 
       // Render Avatar Nav Atas
       const displayAvatarImg = document.getElementById('display-avatar-img');
@@ -192,6 +193,30 @@
         displayAvatarImg.classList.add('hidden');
         displayAvatarText.classList.remove('hidden');
       }
+    }
+
+    // Fungsi mengambil jumlah pemberitahuan belum dibaca dari Google Sheets
+    function fetchPemberitahuanCount() {
+      const callbackName = 'onCountReceived_' + Math.round(Math.random() * 100000);
+      const script = document.createElement('script');
+
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (script.parentNode) document.body.removeChild(script);
+
+        if (!data || !Array.isArray(data)) data = [];
+
+        // Ambil daftar ID pemberitahuan yang sudah pernah dibuka oleh siswa ini
+        const readPengumuman = JSON.parse(localStorage.getItem('read_pengumuman') || '[]');
+        
+        // Hitung berapa item dari database yang ID-nya belum ada di list read_pengumuman
+        const unreadCount = data.filter(item => !readPengumuman.includes(String(item.id))).length;
+
+        document.getElementById('count-pemberitahuan').innerText = unreadCount;
+      };
+
+      script.src = `${GOOGLE_SCRIPT_URL}?action=getPemberitahuan&callback=${callbackName}`;
+      document.body.appendChild(script);
     }
 
     function openProfileModal() {
