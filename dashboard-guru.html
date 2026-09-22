@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Informatika - Dashboard Guru</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
+
+  <div class="w-full max-w-7xl mx-auto">
+    <!-- Navbar Topbar Guru -->
+    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-500 text-indigo-950 p-2 rounded-lg font-bold">LMS GURU</div>
+        <h1 class="text-xl font-bold">LMS Informatika - Panel Pengajar</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="display-role" class="text-sm bg-amber-500 text-indigo-950 font-bold px-3 py-1 rounded-full">Guru Mode</span>
+        
+        <!-- Avatar Profil Guru -->
+        <button onclick="openProfileModal()" title="Klik untuk lihat profil" class="relative group focus:outline-none">
+          <div id="display-avatar-bg" class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold overflow-hidden border-2 border-amber-400 group-hover:border-white transition">
+            <img id="display-avatar-img" src="" alt="Profil Guru" class="w-full h-full object-cover hidden">
+            <span id="display-avatar-text" class="text-white">G</span>
+          </div>
+        </button>
+
+        <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold flex items-center gap-1">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Section Guru -->
+    <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Sidebar Navigasi Khusus Guru -->
+      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border">
+        <a href="dashboard-guru.html" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3">
+          <i class="fas fa-chalkboard-teacher"></i> Beranda Guru
+        </a>
+        <a href="kelola-tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-tasks"></i> Kelola Tugas
+        </a>
+        <a href="kelola-latihan.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-pen-nib"></i> Kelola Latihan
+        </a>
+        <a href="kelola-ujian.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-file-signature"></i> Kelola Ujian CP
+        </a>
+        <a href="rekap-kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-calendar-check"></i> Rekap Kehadiran
+        </a>
+        <a href="input-nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-trophy"></i> Input Nilai & Rapor
+        </a>
+      </aside>
+
+      <!-- Konten Utama Dashboard Guru -->
+      <section class="md:col-span-3 space-y-6">
+        <!-- Banner Menyapa Guru -->
+        <div class="bg-indigo-800 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
+          <div>
+            <h2 id="welcome-title" class="text-2xl font-bold">Selamat Datang, Bapak/Ibu Guru!</h2>
+            <p id="welcome-sub" class="text-indigo-200 mt-1">Memuat data pengajaran...</p>
+          </div>
+        </div>
+
+        <!-- Card Statistik Ringkas Guru -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <a href="kelola-tugas.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-600 border hover:shadow-md hover:-translate-y-0.5 transition block">
+            <p class="text-slate-500 text-sm font-medium">Tugas Perlu Dinilai</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1">12 <span class="text-xs text-blue-600 font-normal">Siswa</span></p>
+          </a>
+          <a href="kelola-latihan.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-600 border hover:shadow-md hover:-translate-y-0.5 transition block">
+            <p class="text-slate-500 text-sm font-medium">Bank Latihan</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1">5 <span class="text-xs text-amber-600 font-normal">Paket</span></p>
+          </a>
+          <a href="kelola-ujian.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border hover:shadow-md hover:-translate-y-0.5 transition block">
+            <p class="text-slate-500 text-sm font-medium">Status Ujian CP</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1">1 <span class="text-xs text-emerald-600 font-normal">Aktif</span></p>
+          </a>
+          <a href="pengumuman.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-600 border hover:shadow-md hover:-translate-y-0.5 transition block">
+            <p class="text-slate-500 text-sm font-medium">Buat Pengumuman</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1"><i class="fas fa-plus-circle text-rose-600 text-xl"></i></p>
+          </a>
+        </div>
+
+        <!-- Daftar Kelas yang Diampu -->
+        <div>
+          <h3 class="text-lg font-bold mb-4 text-slate-800">Kelas yang Diampu</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
+              <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">Kelas VII</span>
+              <h4 class="font-bold text-lg mt-2">Informatika Dasar</h4>
+              <p class="text-sm text-slate-500 mt-1">Total: 32 Siswa Terdaftar</p>
+              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
+                <span class="text-slate-500">12 Modul Pembelajaran</span>
+                <a href="#" class="text-indigo-600 font-bold hover:underline">Kelola Kelas →</a>
+              </div>
+            </div>
+
+            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
+              <span class="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Kelas VIII</span>
+              <h4 class="font-bold text-lg mt-2">Algoritma & Pemrograman</h4>
+              <p class="text-sm text-slate-500 mt-1">Total: 30 Siswa Terdaftar</p>
+              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
+                <span class="text-slate-500">8 Modul Pembelajaran</span>
+                <a href="#" class="text-indigo-600 font-bold hover:underline">Kelola Kelas →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL POPUP PROFIL GURU -->
+  <div id="modal-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border">
+      <div class="bg-indigo-900 p-6 text-center text-white relative">
+        <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-lg">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="w-24 h-24 mx-auto rounded-full bg-indigo-700 border-4 border-amber-400 shadow-md overflow-hidden flex items-center justify-center text-3xl font-bold mb-2">
+          <img id="modal-foto" src="" alt="Foto Guru" class="w-full h-full object-cover hidden">
+          <span id="modal-initial" class="text-white">G</span>
+        </div>
+        <h3 id="modal-nama" class="font-bold text-lg">Nama Pengguna</h3>
+        <span id="modal-role" class="text-xs bg-amber-500 text-indigo-950 font-bold px-2.5 py-1 rounded-full mt-1 inline-block">Guru</span>
+      </div>
+      <div class="p-6 space-y-3 text-sm">
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-id-card text-indigo-600 mr-2"></i>NIP / ID Guru</span>
+          <span id="modal-id" class="font-bold font-mono text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>Jabatan / Pengampu</span>
+          <span id="modal-kelas" class="font-semibold text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between pb-1">
+          <span class="text-slate-500"><i class="fas fa-birthday-cake text-indigo-600 mr-2"></i>Tanggal Lahir</span>
+          <span id="modal-tgl" class="font-semibold text-slate-800">-</span>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-50 border-t text-center">
+        <button onclick="closeProfileModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const userData = JSON.parse(localStorage.getItem('session_user'));
+
+    if (!userData) {
+      window.location.href = "index.html";
+    } else {
+      // Proteksi Role: Alihkan jika yang login BUKAN Guru/Admin
+      const userRole = String(userData.role || '').toLowerCase();
+      if (userRole === "siswa") {
+        window.location.href = "dashboard.html";
+      } else if (userRole === "admin") {
+        window.location.href = "dashboard-admin.html";
+      }
+
+      document.getElementById('display-role').innerText = userData.role + " Mode";
+      document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
+      document.getElementById('welcome-sub').innerText = `NIP/ID: ${userData.id} | ${userData.kelas || userData.detail}`;
+
+      // Render Avatar Nav Atas
+      const displayAvatarImg = document.getElementById('display-avatar-img');
+      const displayAvatarText = document.getElementById('display-avatar-text');
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        displayAvatarImg.src = userData.foto;
+        displayAvatarImg.classList.remove('hidden');
+        displayAvatarText.classList.add('hidden');
+      } else {
+        displayAvatarText.innerText = userData.nama ? userData.nama[0] : 'G';
+        displayAvatarImg.classList.add('hidden');
+        displayAvatarText.classList.remove('hidden');
+      }
+    }
+
+    function openProfileModal() {
+      document.getElementById('modal-nama').innerText = userData.nama || 'Nama Pengguna';
+      document.getElementById('modal-role').innerText = userData.role || 'Guru';
+      document.getElementById('modal-id').innerText = userData.id || '-';
+      document.getElementById('modal-kelas').innerText = userData.kelas || userData.detail || '-';
+      document.getElementById('modal-tgl').innerText = userData.tglLahir || '-';
+
+      const modalFoto = document.getElementById('modal-foto');
+      const modalInitial = document.getElementById('modal-initial');
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        modalFoto.src = userData.foto;
+        modalFoto.classList.remove('hidden');
+        modalInitial.classList.add('hidden');
+      } else {
+        modalInitial.innerText = userData.nama ? userData.nama[0] : 'G';
+        modalFoto.classList.add('hidden');
+        modalInitial.classList.remove('hidden');
+      }
+
+      document.getElementById('modal-profile').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('modal-profile').classList.add('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('session_user');
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
