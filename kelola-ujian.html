@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Guru - Kelola Ujian CP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
+
+  <div class="w-full max-w-7xl mx-auto">
+    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+      <div class="flex items-center gap-3">
+        <div class="bg-amber-500 text-indigo-950 p-2 rounded-lg font-bold">LMS GURU</div>
+        <h1 class="text-xl font-bold">LMS Informatika - Panel Pengajar</h1>
+      </div>
+      <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold flex items-center gap-1">
+        <i class="fas fa-sign-out-alt"></i> Keluar
+      </button>
+    </header>
+
+    <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border">
+        <a href="dashboard-guru.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-chalkboard-teacher"></i> Beranda Guru</a>
+        <a href="kelola-tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Kelola Tugas</a>
+        <a href="kelola-latihan.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-pen-nib"></i> Kelola Latihan</a>
+        <a href="kelola-ujian.html" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-file-signature"></i> Kelola Ujian CP</a>
+        <a href="rekap-kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-calendar-check"></i> Rekap Kehadiran</a>
+        <a href="input-nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Input Nilai & Rapor</a>
+      </aside>
+
+      <section class="md:col-span-3 space-y-6">
+        <div class="bg-emerald-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
+          <div>
+            <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-file-signature"></i> Pengaturan & Pelaksanaan Ujian CP</h2>
+            <p class="text-emerald-100 mt-1 text-sm">Aktifkan atau nonaktifkan jadwal ujian capaian pembelajaran.</p>
+          </div>
+          <button onclick="alert('Fitur Buat Ujian CP Siap!')" class="bg-amber-500 hover:bg-amber-600 text-indigo-950 font-bold px-4 py-2 rounded-lg text-sm shadow">
+            + Buat Ujian CP Baru
+          </button>
+        </div>
+
+        <div class="bg-white rounded-xl border shadow-sm p-5 space-y-4">
+          <div class="p-4 border rounded-xl flex justify-between items-center bg-emerald-50/50">
+            <div>
+              <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-0.5 rounded-full">Aktif Berlangsung</span>
+              <h4 class="font-bold text-slate-800 mt-1">Ujian CP 1: Berpikir Komputasional</h4>
+              <p class="text-xs text-slate-500">Durasi: 60 Menit • Akses Dibuka</p>
+            </div>
+            <button onclick="alert('Status Ujian Berhasil Diubah!')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg">
+              Tutup Ujian
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const userData = JSON.parse(localStorage.getItem('session_user'));
+    if (!userData || (userData.role !== "Guru" && userData.role !== "Admin")) window.location.href = "index.html";
+    function logout() { localStorage.removeItem('session_user'); window.location.href = "index.html"; }
+  </script>
+</body>
+</html>
