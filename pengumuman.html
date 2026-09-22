@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Informatika - Pemberitahuan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
+
+  <div class="w-full max-w-7xl mx-auto">
+    <!-- Navbar Topbar -->
+    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+      <div class="flex items-center gap-3">
+        <div class="bg-indigo-700 p-2 rounded-lg font-bold">LMS</div>
+        <h1 class="text-xl font-bold">LMS Informatika Sekolah</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="display-role" class="text-sm bg-indigo-800 px-3 py-1 rounded-full">Siswa Mode</span>
+        
+        <button onclick="openProfileModal()" title="Klik untuk lihat profil" class="relative group focus:outline-none">
+          <div id="display-avatar-bg" class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold overflow-hidden border-2 border-indigo-300 group-hover:border-white transition">
+            <img id="display-avatar-img" src="" alt="Profil" class="w-full h-full object-cover hidden">
+            <span id="display-avatar-text" class="text-white">U</span>
+          </div>
+        </button>
+
+        <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold flex items-center gap-1">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Section -->
+    <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Sidebar Navigasi -->
+      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border">
+        <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-home"></i> Beranda
+        </a>
+        <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-tasks"></i> Tugas Saya
+        </a>
+        <a href="kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-calendar-check"></i> Kehadiran
+        </a>
+        <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-trophy"></i> Nilai & Rapor
+        </a>
+      </aside>
+
+      <!-- Konten Utama Pemberitahuan -->
+      <section class="md:col-span-3 space-y-6">
+        <div class="bg-rose-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
+          <div>
+            <h2 class="text-2xl font-bold flex items-center gap-2">
+              <i class="fas fa-bullhorn"></i> Papan Pemberitahuan
+            </h2>
+            <p class="text-rose-100 mt-1 text-sm">Informasi penting seputar pembelajaran dan kegiatan sekolah.</p>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Pengumuman 1 -->
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-rose-200 border-l-4 border-l-rose-500">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-semibold bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full">Penting</span>
+              <span class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i> Hari ini, 08.00 WIB</span>
+            </div>
+            <h3 class="font-bold text-lg text-slate-800 mb-1">Jadwal Ujian Capaian Pembelajaran (CP) Semester 1</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Diberitahukan kepada seluruh siswa kelas VII dan VIII bahwa pelaksanaan Ujian CP 1 akan dilaksanakan secara daring melalui LMS ini pada hari Jumat mendatang. Harap persiapkan diri dengan baik.
+            </p>
+            <div class="mt-3 text-xs text-slate-500 font-medium">Oleh: Admin Sekolah</div>
+          </div>
+
+          <!-- Pengumuman 2 -->
+          <div class="bg-white p-5 rounded-xl shadow-sm border border-l-4 border-l-indigo-500">
+            <div class="flex justify-between items-center mb-2">
+              <span class="text-xs font-semibold bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full">Informasi</span>
+              <span class="text-xs text-slate-400"><i class="far fa-clock mr-1"></i> Kemarin, 14.30 WIB</span>
+            </div>
+            <h3 class="font-bold text-lg text-slate-800 mb-1">Pembaruan Modul Pembelajaran Informatika</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Materi baru untuk mata pelajaran Algoritma & Pemrograman telah diunggah. Silakan cek menu Beranda atau Masuk Kelas untuk mengunduh modul pembelajaran terbaru.
+            </p>
+            <div class="mt-3 text-xs text-slate-500 font-medium">Oleh: Budi Santoso, S.Pd.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL POPUP PROFIL SISWA -->
+  <div id="modal-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border">
+      <div class="bg-indigo-900 p-6 text-center text-white relative">
+        <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-lg">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="w-24 h-24 mx-auto rounded-full bg-indigo-700 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl font-bold mb-2">
+          <img id="modal-foto" src="" alt="Foto Siswa" class="w-full h-full object-cover hidden">
+          <span id="modal-initial" class="text-white">U</span>
+        </div>
+        <h3 id="modal-nama" class="font-bold text-lg">Nama Siswa</h3>
+        <span id="modal-role" class="text-xs bg-indigo-700 px-2.5 py-1 rounded-full text-indigo-100 mt-1 inline-block">Siswa</span>
+      </div>
+      <div class="p-6 space-y-3 text-sm">
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-id-card text-indigo-600 mr-2"></i>NISN / NIP</span>
+          <span id="modal-id" class="font-bold font-mono text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>Kelas</span>
+          <span id="modal-kelas" class="font-semibold text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between pb-1">
+          <span class="text-slate-500"><i class="fas fa-birthday-cake text-indigo-600 mr-2"></i>Tanggal Lahir</span>
+          <span id="modal-tgl" class="font-semibold text-slate-800">-</span>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-50 border-t text-center">
+        <button onclick="closeProfileModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const userData = JSON.parse(localStorage.getItem('session_user'));
+
+    if (!userData) {
+      window.location.href = "index.html";
+    } else {
+      document.getElementById('display-role').innerText = userData.role + " Mode";
+      const displayAvatarImg = document.getElementById('display-avatar-img');
+      const displayAvatarText = document.getElementById('display-avatar-text');
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        displayAvatarImg.src = userData.foto;
+        displayAvatarImg.classList.remove('hidden');
+        displayAvatarText.classList.add('hidden');
+      } else {
+        displayAvatarText.innerText = userData.nama ? userData.nama[0] : 'U';
+        displayAvatarImg.classList.add('hidden');
+        displayAvatarText.classList.remove('hidden');
+      }
+    }
+
+    function openProfileModal() {
+      document.getElementById('modal-nama').innerText = userData.nama || 'Nama Siswa';
+      document.getElementById('modal-role').innerText = userData.role || 'Siswa';
+      document.getElementById('modal-id').innerText = userData.id || '-';
+      document.getElementById('modal-kelas').innerText = userData.kelas || userData.detail || '-';
+      document.getElementById('modal-tgl').innerText = userData.tglLahir || '-';
+
+      const modalFoto = document.getElementById('modal-foto');
+      const modalInitial = document.getElementById('modal-initial');
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        modalFoto.src = userData.foto;
+        modalFoto.classList.remove('hidden');
+        modalInitial.classList.add('hidden');
+      } else {
+        modalInitial.innerText = userData.nama ? userData.nama[0] : 'U';
+        modalFoto.classList.add('hidden');
+        modalInitial.classList.remove('hidden');
+      }
+
+      document.getElementById('modal-profile').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('modal-profile').classList.add('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('session_user');
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
