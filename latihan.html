@@ -69,9 +69,9 @@
               <h3 class="font-bold text-lg text-slate-800">Latihan 1: Perangkat Keras Komputer</h3>
               <p class="text-sm text-slate-500">10 Soal Pilihan Ganda • Waktu: 20 Menit</p>
             </div>
-            <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition text-center w-full md:w-auto">
+            <button id="btn-lat1" onclick="completeItem('latihan', 'lat1')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition text-center w-full md:w-auto">
               Mulai Kerjakan
-            </a>
+            </button>
           </div>
 
           <!-- Card Latihan 2 -->
@@ -81,9 +81,9 @@
               <h3 class="font-bold text-lg text-slate-800">Latihan 2: Dasar Variable & Tipe Data</h3>
               <p class="text-sm text-slate-500">15 Soal Isian Singkat • Waktu: 30 Menit</p>
             </div>
-            <a href="#" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition text-center w-full md:w-auto">
+            <button id="btn-lat2" onclick="completeItem('latihan', 'lat2')" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-2 rounded-lg font-bold text-sm transition text-center w-full md:w-auto">
               Mulai Kerjakan
-            </a>
+            </button>
           </div>
         </div>
       </section>
@@ -145,6 +145,32 @@
         displayAvatarImg.classList.add('hidden');
         displayAvatarText.classList.remove('hidden');
       }
+
+      checkStatus();
+    }
+
+    function completeItem(type, itemId) {
+      let list = JSON.parse(localStorage.getItem('completed_' + type) || '[]');
+      if (!list.includes(itemId)) {
+        list.push(itemId);
+        localStorage.setItem('completed_' + type, JSON.stringify(list));
+      }
+      alert("Latihan berhasil diselesaikan!");
+      checkStatus();
+    }
+
+    function checkStatus() {
+      let list = JSON.parse(localStorage.getItem('completed_latihan') || '[]');
+      ['lat1', 'lat2'].forEach(id => {
+        if (list.includes(id)) {
+          const btn = document.getElementById('btn-' + id);
+          if (btn) {
+            btn.innerText = "Selesai";
+            btn.className = "bg-slate-300 text-slate-600 px-4 py-2 rounded-lg font-bold text-sm cursor-not-allowed w-full md:w-auto";
+            btn.disabled = true;
+          }
+        }
+      });
     }
 
     function openProfileModal() {
