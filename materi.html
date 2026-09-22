@@ -132,7 +132,7 @@
     // Tangkap parameter Kelas dan Mapel dari URL
     const urlParams = new URLSearchParams(window.location.search);
     let selectedKelas = urlParams.get('kelas') || 'Kelas VII';
-    let selectedMapel = urlParams.get('mapel') || 'Informatika Dasar';
+    let selectedMapel = urlParams.get('mapel') || 'Informatika';
 
     document.getElementById('role-badge').innerText = (user.role || 'Siswa') + ' Mode';
     document.getElementById('judul-mapel').innerHTML = `<i class="fas fa-book-open"></i> ${selectedMapel}`;
@@ -150,7 +150,7 @@
       sidebar.innerHTML = `
         <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-home"></i> Beranda</a>
         <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
-        <a href="materi.html?kelas=Kelas%20VII&mapel=Informatika%20Dasar" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Materi Pembelajaran</a>
+        <a href="materi.html?kelas=Kelas%20VII&mapel=Informatika" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Materi Pembelajaran</a>
         <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Tugas Saya</a>
         <a href="kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-calendar-check"></i> Kehadiran</a>
         <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Nilai & Rapor</a>
@@ -159,7 +159,7 @@
       sidebar.innerHTML = `
         <a href="dashboard-guru.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-chalkboard-teacher"></i> Beranda Guru</a>
         <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
-        <a href="materi.html?kelas=Kelas%20VII&mapel=Informatika%20Dasar" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Kelola Materi</a>
+        <a href="materi.html?kelas=Kelas%20VII&mapel=Informatika" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Kelola Materi</a>
         <a href="kelola-tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Kelola Tugas</a>
         <a href="kelola-latihan.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-pen-nib"></i> Kelola Latihan</a>
         <a href="kelola-ujian.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-file-signature"></i> Kelola Ujian CP</a>
@@ -183,7 +183,7 @@
         container.innerHTML = '';
 
         const filteredMateri = (data || []).filter(item => {
-          const matchMapel = item.mapel && item.mapel.toLowerCase() === selectedMapel.toLowerCase();
+          const matchMapel = item.mapel && item.mapel.toLowerCase().includes(selectedMapel.toLowerCase());
           const matchKelas = !item.targetKelas || item.targetKelas === 'Semua' || item.targetKelas.toLowerCase() === selectedKelas.toLowerCase();
           return matchMapel && matchKelas;
         });
