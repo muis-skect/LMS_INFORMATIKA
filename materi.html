@@ -33,13 +33,17 @@
         <!-- Header Halaman Materi -->
         <div class="bg-indigo-800 text-white p-6 rounded-xl shadow-md flex flex-wrap justify-between items-center gap-4">
           <div>
-            <h2 id="judul-mapel" class="text-2xl font-bold flex items-center gap-2">
-              <i class="fas fa-book-open"></i> Modul Pembelajaran
-            </h2>
+            <h2 id="judul-mapel" class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-book-open"></i> Modul Pembelajaran</h2>
             <p id="sub-info-kelas" class="text-indigo-200 mt-1 text-sm">Bahan bacaan PDF, materi presentasi PPT, dan video pembelajaran.</p>
           </div>
           
           <div class="flex items-center gap-3">
+            <!-- Filter Pilih Mapel (Struktur Asli) -->
+            <select id="select-mapel-filter" onchange="gantiFilterMapel(this.value)" class="px-3 py-2 bg-indigo-900 border border-indigo-600 text-white text-xs font-bold rounded-lg focus:outline-none">
+              <option value="Informatika Dasar">Informatika Dasar</option>
+              <option value="Algoritma dan Pemrograman">Algoritma & Pemrograman</option>
+            </select>
+
             <button id="btn-tambah" onclick="toggleModal(true)" class="hidden bg-amber-500 hover:bg-amber-600 text-indigo-950 font-bold px-4 py-2 rounded-lg text-sm shadow flex items-center gap-2">
               <i class="fas fa-plus"></i> Tambah Materi
             </button>
@@ -54,7 +58,7 @@
     </main>
   </div>
 
-  <!-- Modal Form Input Materi Baru -->
+  <!-- Modal Form Input Materi Baru (Struktur Asli) -->
   <div id="modal-form" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -63,15 +67,13 @@
       </div>
       
       <div class="space-y-3">
-        <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">Mata Pelajaran</label>
-            <input type="text" id="m-mapel" readonly class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-100 font-semibold cursor-not-allowed">
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">Target Kelas</label>
-            <input type="text" id="m-kelas" readonly class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-100 font-semibold cursor-not-allowed">
-          </div>
+        <!-- Mata Pelajaran Dikunci menggunakan Dropdown (Struktur Asli) -->
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Mata Pelajaran</label>
+          <select id="m-mapel" class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-100 font-semibold cursor-not-allowed" disabled>
+            <option value="Informatika Dasar">Informatika Dasar</option>
+            <option value="Algoritma dan Pemrograman">Algoritma & Pemrograman</option>
+          </select>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -93,28 +95,28 @@
         <hr class="border-slate-200">
         <p class="text-xs font-bold text-indigo-700"><i class="fas fa-link mr-1"></i> Link Bahan Pembelajaran (Opsional)</p>
 
-        <!-- 3 KOLOM LINK PDF -->
+        <!-- 3 KOLOM LINK PDF (Struktur Asli) -->
         <div class="space-y-2 bg-red-50/50 p-3 rounded-lg border border-red-100">
-          <label class="block text-xs font-bold text-red-600"><i class="fas fa-file-pdf mr-1"></i> Link File PDF (3 Kolom)</label>
+          <label class="block text-xs font-bold text-red-600"><i class="fas fa-file-pdf mr-1"></i> Link File PDF (Google Drive / Canva / Web)</label>
           <input type="url" id="m-pdf1" placeholder="Link PDF 1 (https://...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
           <input type="url" id="m-pdf2" placeholder="Link PDF 2 (https://...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
           <input type="url" id="m-pdf3" placeholder="Link PDF 3 (https://...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
         </div>
 
-        <!-- 3 KOLOM LINK PPT -->
+        <!-- 3 KOLOM LINK PPT (Struktur Asli) -->
         <div class="space-y-2 bg-amber-50/50 p-3 rounded-lg border border-amber-100">
-          <label class="block text-xs font-bold text-amber-600"><i class="fas fa-file-powerpoint mr-1"></i> Link Presentasi PPT (3 Kolom)</label>
+          <label class="block text-xs font-bold text-amber-600"><i class="fas fa-file-powerpoint mr-1"></i> Link Presentasi PPT</label>
           <input type="url" id="m-ppt1" placeholder="Link PPT 1 (https://...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
           <input type="url" id="m-ppt2" placeholder="Link PPT 2 (https://...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
           <input type="url" id="m-ppt3" placeholder="Link PPT 3 (https://...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
         </div>
 
-        <!-- 3 KOLOM LINK VIDEO -->
+        <!-- 3 KOLOM LINK VIDEO (Struktur Asli) -->
         <div class="space-y-2 bg-blue-50/50 p-3 rounded-lg border border-blue-100">
-          <label class="block text-xs font-bold text-blue-600"><i class="fab fa-youtube text-red-600 mr-1"></i> Link Video Youtube (3 Kolom)</label>
-          <input type="url" id="m-video1" placeholder="Link Video 1 (https://youtube.com/...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
-          <input type="url" id="m-video2" placeholder="Link Video 2 (https://youtube.com/...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
-          <input type="url" id="m-video3" placeholder="Link Video 3 (https://youtube.com/...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
+          <label class="block text-xs font-bold text-blue-600"><i class="fab fa-youtube text-red-600 mr-1"></i> Link Video Youtube</label>
+          <input type="url" id="m-video1" placeholder="Link Video 1 (https://youtube.com/watch?v=...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
+          <input type="url" id="m-video2" placeholder="Link Video 2 (https://youtube.com/watch?v=...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
+          <input type="url" id="m-video3" placeholder="Link Video 3 (https://youtube.com/watch?v=...)" class="w-full px-3 py-1.5 border rounded-lg text-xs bg-white">
         </div>
       </div>
 
@@ -129,16 +131,21 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
     const user = JSON.parse(localStorage.getItem('session_user')) || { nama: 'Pengguna', role: 'Siswa' };
     
-    // Tangkap parameter Kelas dan Mapel dari URL
+    // Menangkap parameter dari URL (Mapel & Kelas) secara aman tanpa merusak struktur
     const urlParams = new URLSearchParams(window.location.search);
-    let selectedKelas = urlParams.get('kelas') || 'Kelas VII';
-    let selectedMapel = urlParams.get('mapel') || 'Informatika';
+    let selectedMapel = urlParams.get('mapel') || 'Informatika Dasar';
+    let selectedKelas = urlParams.get('kelas') || 'Semua';
 
     document.getElementById('role-badge').innerText = (user.role || 'Siswa') + ' Mode';
-    document.getElementById('judul-mapel').innerHTML = `<i class="fas fa-book-open"></i> ${selectedMapel}`;
-    document.getElementById('sub-info-kelas').innerText = `Materi Pembelajaran Khusus ${selectedKelas}`;
-    document.getElementById('m-mapel').value = selectedMapel;
-    document.getElementById('m-kelas').value = selectedKelas;
+    
+    function setHeaderMapel(mapel) {
+      selectedMapel = mapel;
+      document.getElementById('judul-mapel').innerHTML = `<i class="fas fa-book-open"></i> ${selectedMapel} ${selectedKelas !== 'Semua' ? '('+selectedKelas+')' : ''}`;
+      document.getElementById('m-mapel').value = selectedMapel;
+      document.getElementById('select-mapel-filter').value = selectedMapel;
+    }
+
+    setHeaderMapel(selectedMapel);
 
     if (user.role === 'Guru' || user.role === 'Admin') {
       document.getElementById('btn-tambah').classList.remove('hidden');
@@ -150,7 +157,7 @@
       sidebar.innerHTML = `
         <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-home"></i> Beranda</a>
         <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
-        <a href="materi.html?kelas=Kelas%20VII&mapel=Informatika" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Materi Pembelajaran</a>
+        <a href="materi.html?mapel=Informatika%20Dasar" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Materi Pembelajaran</a>
         <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Tugas Saya</a>
         <a href="kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-calendar-check"></i> Kehadiran</a>
         <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Nilai & Rapor</a>
@@ -159,7 +166,7 @@
       sidebar.innerHTML = `
         <a href="dashboard-guru.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-chalkboard-teacher"></i> Beranda Guru</a>
         <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
-        <a href="materi.html?kelas=Kelas%20VII&mapel=Informatika" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Kelola Materi</a>
+        <a href="materi.html?mapel=Informatika%20Dasar" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3"><i class="fas fa-book-open"></i> Kelola Materi</a>
         <a href="kelola-tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Kelola Tugas</a>
         <a href="kelola-latihan.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-pen-nib"></i> Kelola Latihan</a>
         <a href="kelola-ujian.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-file-signature"></i> Kelola Ujian CP</a>
@@ -168,7 +175,12 @@
       `;
     }
 
-    // Ambil Data Materi dari Spreadsheet berdasarkan Mapel & Kelas
+    function gantiFilterMapel(newMapel) {
+      setHeaderMapel(newMapel);
+      fetchMateri();
+    }
+
+    // Ambil Data Materi dari Spreadsheet dengan Filter Kelas & Mapel
     function fetchMateri() {
       const container = document.getElementById('container-materi');
       container.innerHTML = `<div class="text-center py-8 text-slate-500"><i class="fas fa-spinner fa-spin mr-2"></i> Memuat modul materi...</div>`;
@@ -182,14 +194,15 @@
 
         container.innerHTML = '';
 
+        // Filter data sesuai mapel dan kelas target dari URL
         const filteredMateri = (data || []).filter(item => {
           const matchMapel = item.mapel && item.mapel.toLowerCase().includes(selectedMapel.toLowerCase());
-          const matchKelas = !item.targetKelas || item.targetKelas === 'Semua' || item.targetKelas.toLowerCase() === selectedKelas.toLowerCase();
+          const matchKelas = selectedKelas === 'Semua' || !item.targetKelas || item.targetKelas === 'Semua' || item.targetKelas.toLowerCase() === selectedKelas.toLowerCase();
           return matchMapel && matchKelas;
         });
 
         if (filteredMateri.length === 0) {
-          container.innerHTML = `<div class="bg-white p-8 rounded-xl border text-center text-slate-500">Belum ada modul materi untuk ${selectedMapel} (${selectedKelas}).</div>`;
+          container.innerHTML = `<div class="bg-white p-8 rounded-xl border text-center text-slate-500">Belum ada modul materi untuk ${selectedMapel} ${selectedKelas !== 'Semua' ? '('+selectedKelas+')' : ''}.</div>`;
           return;
         }
 
@@ -239,7 +252,7 @@
       document.body.appendChild(script);
     }
 
-    // Simpan Materi Baru
+    // Simpan Materi Baru dengan menyertakan target kelas
     function simpanMateri() {
       const bab = document.getElementById('m-bab').value.trim();
       const sub = document.getElementById('m-sub').value.trim();
