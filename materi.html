@@ -3,55 +3,279 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LMS Informatika - Materi Pelajaran</title>
+  <title>LMS Informatika - Modul Materi Pembelajaran</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
 
   <div class="w-full max-w-7xl mx-auto">
+    <!-- Navbar Topbar -->
     <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
       <div class="flex items-center gap-3">
-        <a href="dashboard.html" class="bg-indigo-700 p-2 rounded-lg font-bold"><i class="fas fa-arrow-left"></i></a>
-        <h1 class="text-xl font-bold" id="mapel-title">Materi Pelajaran</h1>
+        <div class="bg-indigo-600 px-3 py-1 rounded-lg font-bold">LMS</div>
+        <h1 class="text-xl font-bold">LMS Informatika Sekolah</h1>
       </div>
-      <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold">Keluar</button>
+      <div class="flex items-center gap-4">
+        <span id="role-badge" class="text-xs bg-amber-500 text-indigo-950 font-bold px-3 py-1 rounded-full">Mode</span>
+        <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold flex items-center gap-1">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </div>
     </header>
 
     <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit">
-        <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
-          <i class="fas fa-home"></i> Beranda
-        </a>
-        <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
-          <i class="fas fa-tasks"></i> Tugas Saya
-        </a>
-      </aside>
+      <!-- Sidebar Navigasi -->
+      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border" id="sidebar-nav"></aside>
 
-      <section class="md:col-span-3 space-y-4">
-        <h3 class="text-xl font-bold">Modul Pembelajaran</h3>
-        
-        <div class="bg-white p-5 rounded-xl shadow-sm border">
-          <h4 class="font-bold text-lg text-indigo-700">Modul 1: Pengenalan Sistem Komputer</h4>
-          <p class="text-sm text-slate-600 mt-2">Membahas tentang komponen utama hardware, software, dan brainware.</p>
-          <div class="mt-4 flex gap-3">
-            <button class="bg-indigo-700 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-file-pdf mr-1"></i> Baca Materi PDF</button>
-            <button class="bg-emerald-600 text-white px-4 py-2 rounded-lg text-xs font-bold"><i class="fas fa-video mr-1"></i> Tonton Video</button>
+      <!-- Main Content -->
+      <section class="md:col-span-3 space-y-6">
+        <!-- Header Halaman Materi -->
+        <div class="bg-indigo-800 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
+          <div>
+            <h2 id="judul-mapel" class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-book-open"></i> Modul Pembelajaran</h2>
+            <p class="text-indigo-200 mt-1 text-sm">Bahan bacaan PDF, materi presentasi PPT, dan video pembelajaran.</p>
           </div>
+          <button id="btn-tambah" onclick="toggleModal(true)" class="hidden bg-amber-500 hover:bg-amber-600 text-indigo-950 font-bold px-4 py-2 rounded-lg text-sm shadow flex items-center gap-2">
+            <i class="fas fa-plus"></i> Tambah Materi
+          </button>
+        </div>
+
+        <!-- Container List Materi -->
+        <div id="container-materi" class="space-y-4">
+          <div class="text-center py-8 text-slate-500"><i class="fas fa-spinner fa-spin mr-2"></i> Memuat modul materi...</div>
         </div>
       </section>
     </main>
   </div>
 
+  <!-- Modal Form Input Materi Baru -->
+  <div id="modal-form" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="text-lg font-bold text-slate-800"><i class="fas fa-plus-circle text-indigo-600"></i> Tambah Bahan Materi Baru</h3>
+        <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
+      </div>
+      
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Mata Pelajaran</label>
+          <input type="text" id="m-mapel" readonly class="w-full px-3 py-2 border rounded-lg text-sm bg-slate-100 font-semibold">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Judul Bab / Topik Utama</label>
+            <input type="text" id="m-bab" placeholder="Contoh: Berpikir Komputasional" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-600 mb-1">Sub Bab / Pembahasan</label>
+            <input type="text" id="m-sub" placeholder="Contoh: Pembahasan I - Algoritma" class="w-full px-3 py-2 border rounded-lg text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-600 mb-1">Ringkasan Materi / Pengantar</label>
+          <textarea id="m-teks" rows="3" placeholder="Tuliskan ulasan ringkas materi di sini..." class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+        </div>
+
+        <hr class="border-slate-200">
+        <p class="text-xs font-bold text-indigo-700"><i class="fas fa-link mr-1"></i> Link Bahan Pembelajaran (Opsional)</p>
+        
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1"><i class="fas fa-file-pdf text-red-500 mr-1"></i> Link PDF (Google Drive / Canva / Web)</label>
+          <input type="url" id="m-pdf" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1"><i class="fas fa-file-powerpoint text-orange-500 mr-1"></i> Link PPT Presentasi</label>
+          <input type="url" id="m-ppt" placeholder="https://..." class="w-full px-3 py-2 border rounded-lg text-sm">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1"><i class="fab fa-youtube text-red-600 mr-1"></i> Link Video Pembelajaran (YouTube)</label>
+          <input type="url" id="m-video" placeholder="https://youtube.com/watch?v=..." class="w-full px-3 py-2 border rounded-lg text-sm">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-3 border-t">
+        <button onclick="toggleModal(false)" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-bold">Batal</button>
+        <button id="btn-submit" onclick="simpanMateri()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold shadow">Simpan & Terbitkan</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    const userData = JSON.parse(localStorage.getItem('session_user'));
-    if (!userData) window.location.href = "index.html";
-
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
+    const user = JSON.parse(localStorage.getItem('session_user')) || { nama: 'Pengguna', role: 'Siswa' };
+    
+    // Tangkap nama Mata Pelajaran dari URL query (?mapel=Informatika%20Dasar)
     const urlParams = new URLSearchParams(window.location.search);
-    const mapel = urlParams.get('mapel');
-    if (mapel) document.getElementById('mapel-title').innerText = "Materi: " + mapel;
+    const selectedMapel = urlParams.get('mapel') || 'Informatika Dasar';
 
-    function logout() { localStorage.removeItem('session_user'); window.location.href = "index.html"; }
+    document.getElementById('role-badge').innerText = (user.role || 'Siswa') + ' Mode';
+    document.getElementById('judul-mapel').innerHTML = `<i class="fas fa-book-open"></i> ${selectedMapel}`;
+    document.getElementById('m-mapel').value = selectedMapel;
+
+    if (user.role === 'Guru' || user.role === 'Admin') {
+      document.getElementById('btn-tambah').classList.remove('hidden');
+    }
+
+    // Sidebar
+    const sidebar = document.getElementById('sidebar-nav');
+    if (user.role === 'Siswa') {
+      sidebar.innerHTML = `
+        <a href="dashboard.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-home"></i> Beranda</a>
+        <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
+        <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Tugas Saya</a>
+        <a href="kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-calendar-check"></i> Kehadiran</a>
+        <a href="nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Nilai & Rapor</a>
+      `;
+    } else {
+      sidebar.innerHTML = `
+        <a href="dashboard-guru.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-chalkboard-teacher"></i> Beranda Guru</a>
+        <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-bullhorn"></i> Pemberitahuan</a>
+        <a href="kelola-tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-tasks"></i> Kelola Tugas</a>
+        <a href="kelola-latihan.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-pen-nib"></i> Kelola Latihan</a>
+        <a href="kelola-ujian.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-file-signature"></i> Kelola Ujian CP</a>
+        <a href="rekap-kehadiran.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-calendar-check"></i> Rekap Kehadiran</a>
+        <a href="input-nilai.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg"><i class="fas fa-trophy"></i> Input Nilai & Rapor</a>
+      `;
+    }
+
+    // Ambil Data Materi dari Google Sheets
+    function fetchMateri() {
+      const callbackName = 'onMateriReceived_' + Math.round(Math.random() * 100000);
+      const script = document.createElement('script');
+
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (script.parentNode) document.body.removeChild(script);
+
+        const container = document.getElementById('container-materi');
+        container.innerHTML = '';
+
+        // Filter Materi Sesuai Mata Pelajaran yang Dibuka
+        const filteredMateri = (data || []).filter(item => item.mapel.toLowerCase() === selectedMapel.toLowerCase());
+
+        if (filteredMateri.length === 0) {
+          container.innerHTML = `<div class="bg-white p-8 rounded-xl border text-center text-slate-500">Belum ada modul materi untuk mata pelajaran ini.</div>`;
+          return;
+        }
+
+        filteredMateri.forEach(item => {
+          const tombolHapus = (user.role === 'Guru' || user.role === 'Admin') 
+            ? `<button onclick="hapusMateri('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold border border-red-200 bg-red-50 px-2.5 py-1 rounded-lg transition">
+                 <i class="fas fa-trash-alt"></i> Hapus Modul
+               </button>`
+            : '';
+
+          // Tombol Akses File PDF, PPT, Video
+          const btnPdf = item.urlPdf ? `<a href="${item.urlPdf}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 rounded-lg text-xs font-bold hover:bg-red-100 transition"><i class="fas fa-file-pdf text-red-600"></i> Buka PDF</a>` : '';
+          const btnPpt = item.urlPpt ? `<a href="${item.urlPpt}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold hover:bg-amber-100 transition"><i class="fas fa-file-powerpoint text-amber-600"></i> Buka PPT</a>` : '';
+          const btnVideo = item.urlVideo ? `<a href="${item.urlVideo}" target="_blank" class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 border border-blue-200 rounded-lg text-xs font-bold hover:bg-blue-100 transition"><i class="fab fa-youtube text-red-600"></i> Tonton Video</a>` : '';
+
+          container.innerHTML += `
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <div class="flex justify-between items-center border-b pb-2">
+                <div>
+                  <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-0.5 rounded-full border border-indigo-200">${item.judulBab}</span>
+                  <h3 class="text-lg font-bold text-slate-800 mt-1">${item.subBab}</h3>
+                </div>
+                ${tombolHapus}
+              </div>
+
+              <p class="text-sm text-slate-600 leading-relaxed">${item.isiTeks || 'Tidak ada deskripsi teks.'}</p>
+
+              <div class="flex flex-wrap gap-2 pt-2 border-t border-slate-100">
+                ${btnPdf}
+                ${btnPpt}
+                ${btnVideo}
+              </div>
+            </div>
+          `;
+        });
+      };
+
+      script.src = `${GOOGLE_SCRIPT_URL}?action=getMateri&callback=${callbackName}`;
+      document.body.appendChild(script);
+    }
+
+    // Simpan Materi ke Spreadsheet
+    function simpanMateri() {
+      const bab = document.getElementById('m-bab').value.trim();
+      const sub = document.getElementById('m-sub').value.trim();
+      const teks = document.getElementById('m-teks').value.trim();
+      const pdf = document.getElementById('m-pdf').value.trim();
+      const ppt = document.getElementById('m-ppt').value.trim();
+      const video = document.getElementById('m-video').value.trim();
+      const btnSubmit = document.getElementById('btn-submit');
+
+      if (!bab || !sub) {
+        alert('Mohon isi Judul Bab dan Sub Bab!');
+        return;
+      }
+
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = "Menyimpan...";
+
+      const payload = {
+        action: "addMateri",
+        id: "MAT-" + Date.now(),
+        mapel: selectedMapel,
+        judulBab: bab,
+        subBab: sub,
+        isiTeks: teks,
+        urlPdf: pdf,
+        urlPpt: ppt,
+        urlVideo: video
+      };
+
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Simpan & Terbitkan";
+        document.getElementById('m-bab').value = '';
+        document.getElementById('m-sub').value = '';
+        document.getElementById('m-teks').value = '';
+        document.getElementById('m-pdf').value = '';
+        document.getElementById('m-ppt').value = '';
+        document.getElementById('m-video').value = '';
+        toggleModal(false);
+        fetchMateri();
+        alert('Materi baru berhasil disimpan!');
+      })
+      .catch(() => {
+        alert("Gagal menghubungkan ke database Google Sheets.");
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Simpan & Terbitkan";
+      });
+    }
+
+    // Hapus Materi
+    function hapusMateri(id) {
+      if (confirm('Apakah Anda yakin ingin menghapus modul materi ini?')) {
+        const payload = { action: "deleteMateri", id: id };
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        })
+        .then(() => {
+          fetchMateri();
+          alert('Modul materi berhasil dihapus!');
+        });
+      }
+    }
+
+    function toggleModal(show) {
+      document.getElementById('modal-form').classList.toggle('hidden', !show);
+    }
+
+    function logout() {
+      localStorage.removeItem('session_user');
+      window.location.href = "index.html";
+    }
+
+    fetchMateri();
   </script>
 </body>
 </html>
