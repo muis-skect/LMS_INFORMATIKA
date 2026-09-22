@@ -10,7 +10,7 @@
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
 
   <div class="w-full max-w-7xl mx-auto">
-    <!-- Navbar Topbar -->
+    <!-- Topbar -->
     <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
       <div class="flex items-center gap-3">
         <div class="bg-indigo-600 px-3 py-1 rounded-lg font-bold">LMS</div>
@@ -25,22 +25,22 @@
     </header>
 
     <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <!-- Sidebar Navigasi -->
       <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border" id="sidebar-nav"></aside>
 
-      <!-- Main Content -->
       <section class="md:col-span-3 space-y-6">
         <div class="bg-rose-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
           <div>
             <h2 class="text-2xl font-bold flex items-center gap-2"><i class="fas fa-bullhorn"></i> Papan Pemberitahuan</h2>
-            <p class="text-rose-100 mt-1 text-sm">Informasi penting seputar pembelajaran dan kegiatan sekolah.</p>
+            <p class="text-rose-100 mt-1 text-sm">Informasi terhubung langsung dengan Google Sheets.</p>
           </div>
           <button id="btn-tambah" onclick="toggleModal(true)" class="hidden bg-amber-500 hover:bg-amber-600 text-indigo-950 font-bold px-4 py-2 rounded-lg text-sm shadow flex items-center gap-2">
             <i class="fas fa-plus"></i> Tambah Pemberitahuan
           </button>
         </div>
 
-        <div id="container-pemberitahuan" class="space-y-4"></div>
+        <div id="container-pemberitahuan" class="space-y-4">
+          <div class="text-center py-8 text-slate-500"><i class="fas fa-spinner fa-spin mr-2"></i> Memuat data dari database...</div>
+        </div>
       </section>
     </main>
   </div>
@@ -49,7 +49,7 @@
   <div id="modal-form" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
     <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="text-lg font-bold text-slate-800"><i class="fas fa-pen-square text-rose-600"></i> Buat Pemberitahuan Baru</h3>
+        <h3 class="text-lg font-bold text-slate-800">Buat Pemberitahuan Baru</h3>
         <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600"><i class="fas fa-times text-xl"></i></button>
       </div>
       
@@ -74,26 +74,29 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-600 mb-1">Isi Pemberitahuan</label>
-          <textarea id="p-isi" rows="4" placeholder="Tuliskan isi pesan pemberitahuan..." class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
+          <textarea id="p-isi" rows="4" placeholder="Tuliskan isi pesan..." class="w-full px-3 py-2 border rounded-lg text-sm"></textarea>
         </div>
       </div>
 
       <div class="flex justify-end gap-2 pt-3 border-t">
         <button onclick="toggleModal(false)" class="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg text-sm font-bold">Batal</button>
-        <button onclick="simpanPemberitahuan()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold shadow">Terbitkan</button>
+        <button id="btn-submit" onclick="simpanPemberitahuan()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-bold shadow">Terbitkan</button>
       </div>
     </div>
   </div>
 
   <script>
-    const user = JSON.parse(localStorage.getItem('session_user')) || { name: 'Pengguna', role: 'Siswa' };
-    document.getElementById('role-badge').innerText = user.role + ' Mode';
-    document.getElementById('p-penulis').value = user.name || 'Guru Informatika';
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
+    const user = JSON.parse(localStorage.getItem('session_user')) || { nama: 'Pengguna', role: 'Siswa' };
+    
+    document.getElementById('role-badge').innerText = (user.role || 'Siswa') + ' Mode';
+    document.getElementById('p-penulis').value = user.nama || 'Guru Informatika';
 
     if (user.role === 'Guru' || user.role === 'Admin') {
       document.getElementById('btn-tambah').classList.remove('hidden');
     }
 
+    // Render Sidebar
     const sidebar = document.getElementById('sidebar-nav');
     if (user.role === 'Siswa') {
       sidebar.innerHTML = `
@@ -115,95 +118,116 @@
       `;
     }
 
-    const defaultData = [
-      {
-        id: 1,
-        judul: "Jadwal Ujian Capaian Pembelajaran (CP) Semester 1",
-        kategori: "Penting",
-        penulis: "Admin Sekolah",
-        waktu: "Hari ini, 08.00 WIB",
-        isi: "Diberitahukan kepada seluruh siswa kelas VII dan VIII bahwa pelaksanaan Ujian CP 1 akan dilaksanakan secara daring melalui LMS ini pada hari Jumat mendatang."
-      }
-    ];
+    // Ambil Data dari Google Sheets
+    function fetchPemberitahuan() {
+      const callbackName = 'onDataReceived_' + Math.round(Math.random() * 100000);
+      const script = document.createElement('script');
 
-    function renderPemberitahuan() {
-      let data = JSON.parse(localStorage.getItem('lms_pemberitahuan'));
-      if (!data) {
-        localStorage.setItem('lms_pemberitahuan', JSON.stringify(defaultData));
-        data = defaultData;
-      }
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (script.parentNode) document.body.removeChild(script);
 
-      const container = document.getElementById('container-pemberitahuan');
-      container.innerHTML = '';
+        const container = document.getElementById('container-pemberitahuan');
+        container.innerHTML = '';
 
-      if (data.length === 0) {
-        container.innerHTML = `<div class="bg-white p-8 rounded-xl border text-center text-slate-500">Belum ada pemberitahuan.</div>`;
-        return;
-      }
+        if (!data || data.length === 0) {
+          container.innerHTML = `<div class="bg-white p-8 rounded-xl border text-center text-slate-500">Belum ada pemberitahuan.</div>`;
+          return;
+        }
 
-      data.forEach(item => {
-        const bgKategori = item.kategori === 'Penting' || item.kategori === 'Mendesak' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800';
-        const tombolHapus = (user.role === 'Guru' || user.role === 'Admin') 
-          ? `<button onclick="hapusPemberitahuan(${item.id})" class="text-xs text-red-500 hover:text-red-700 font-bold flex items-center gap-1 border border-red-200 bg-red-50 px-2 py-1 rounded-lg">
-               <i class="fas fa-trash-alt"></i> Hapus
-             </button>`
-          : '';
+        // Urutkan dari yang terbaru
+        data.reverse().forEach(item => {
+          const bgKategori = item.kategori === 'Penting' || item.kategori === 'Mendesak' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800';
+          const tombolHapus = (user.role === 'Guru' || user.role === 'Admin') 
+            ? `<button onclick="hapusPemberitahuan('${item.id}')" class="text-xs text-red-500 hover:text-red-700 font-bold border border-red-200 bg-red-50 px-2 py-1 rounded-lg">
+                 <i class="fas fa-trash-alt"></i> Hapus
+               </button>`
+            : '';
 
-        container.innerHTML += `
-          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
-            <div class="flex justify-between items-center text-xs text-slate-500 border-b pb-2">
-              <span class="font-bold px-2.5 py-0.5 rounded-full ${bgKategori}">${item.kategori}</span>
-              <div class="flex items-center gap-3">
-                <span><i class="far fa-clock"></i> ${item.waktu}</span>
-                ${tombolHapus}
+          container.innerHTML += `
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <div class="flex justify-between items-center text-xs text-slate-500 border-b pb-2">
+                <span class="font-bold px-2.5 py-0.5 rounded-full ${bgKategori}">${item.kategori}</span>
+                <div class="flex items-center gap-3">
+                  <span><i class="far fa-clock"></i> ${item.waktu}</span>
+                  ${tombolHapus}
+                </div>
               </div>
+              <h3 class="text-lg font-bold text-slate-800">${item.judul}</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">${item.isi}</p>
+              <p class="text-xs text-slate-400 pt-2 border-t">Oleh: ${item.penulis}</p>
             </div>
-            <h3 class="text-lg font-bold text-slate-800">${item.judul}</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">${item.isi}</p>
-            <p class="text-xs text-slate-400 pt-2 border-t">Oleh: ${item.penulis || 'Guru Informatika'}</p>
-          </div>
-        `;
-      });
+          `;
+        });
+      };
+
+      script.src = `${GOOGLE_SCRIPT_URL}?action=getPemberitahuan&callback=${callbackName}`;
+      document.body.appendChild(script);
     }
 
-    function toggleModal(show) {
-      document.getElementById('modal-form').classList.toggle('hidden', !show);
-    }
-
+    // Simpan ke Google Sheets
     function simpanPemberitahuan() {
       const judul = document.getElementById('p-judul').value.trim();
       const kategori = document.getElementById('p-kategori').value;
       const isi = document.getElementById('p-isi').value.trim();
+      const btnSubmit = document.getElementById('btn-submit');
 
       if (!judul || !isi) {
         alert('Mohon isi Judul dan Isi Pemberitahuan!');
         return;
       }
 
-      const list = JSON.parse(localStorage.getItem('lms_pemberitahuan')) || defaultData;
-      list.unshift({
-        id: Date.now(),
+      btnSubmit.disabled = true;
+      btnSubmit.innerText = "Menerbitkan...";
+
+      const payload = {
+        action: "addPemberitahuan",
+        id: "INF-" + Date.now(),
         judul: judul,
         kategori: kategori,
-        penulis: user.name || 'Guru Informatika',
+        penulis: user.nama || "Guru Informatika",
         waktu: "Baru Saja",
         isi: isi
-      });
+      };
 
-      localStorage.setItem('lms_pemberitahuan', JSON.stringify(list));
-      document.getElementById('p-judul').value = '';
-      document.getElementById('p-isi').value = '';
-      toggleModal(false);
-      renderPemberitahuan();
+      fetch(GOOGLE_SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify(payload)
+      })
+      .then(() => {
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Terbitkan";
+        document.getElementById('p-judul').value = '';
+        document.getElementById('p-isi').value = '';
+        toggleModal(false);
+        fetchPemberitahuan();
+        alert('Pemberitahuan berhasil disimpan di Google Sheets!');
+      })
+      .catch(err => {
+        alert("Gagal menghubungkan ke database Google Sheets.");
+        btnSubmit.disabled = false;
+        btnSubmit.innerText = "Terbitkan";
+      });
     }
 
+    // Hapus dari Google Sheets
     function hapusPemberitahuan(id) {
-      if (confirm('Apakah Anda yakin ingin menghapus pemberitahuan ini?')) {
-        let list = JSON.parse(localStorage.getItem('lms_pemberitahuan')) || [];
-        list = list.filter(item => item.id !== id);
-        localStorage.setItem('lms_pemberitahuan', JSON.stringify(list));
-        renderPemberitahuan();
+      if (confirm('Apakah Anda yakin ingin menghapus pemberitahuan ini dari database?')) {
+        const payload = { action: "deletePemberitahuan", id: id };
+        
+        fetch(GOOGLE_SCRIPT_URL, {
+          method: "POST",
+          body: JSON.stringify(payload)
+        })
+        .then(() => {
+          fetchPemberitahuan();
+          alert('Pemberitahuan berhasil dihapus!');
+        });
       }
+    }
+
+    function toggleModal(show) {
+      document.getElementById('modal-form').classList.toggle('hidden', !show);
     }
 
     function logout() {
@@ -211,12 +235,7 @@
       window.location.href = "index.html";
     }
 
-    // Otomatis update antar tab di browser yang sama
-    window.addEventListener('storage', () => {
-      renderPemberitahuan();
-    });
-
-    renderPemberitahuan();
+    fetchPemberitahuan();
   </script>
 </body>
 </html>
