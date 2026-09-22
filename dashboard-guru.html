@@ -94,7 +94,7 @@
               <h4 class="text-lg font-bold text-slate-800">Informatika Dasar</h4>
               <p class="text-xs text-slate-500">Total: 32 Siswa Terdaftar</p>
               <div class="flex justify-between items-center pt-2 border-t text-xs">
-                <span class="text-slate-500">12 Modul Pembelajaran</span>
+                <span id="modul-kelas-7" class="text-slate-500 font-semibold">12 Modul Pembelajaran</span>
                 <a href="materi.html?mapel=Informatika%20Dasar" class="text-indigo-600 font-bold hover:underline">Kelola Kelas →</a>[cite: 4]
               </div>
             </div>
@@ -104,7 +104,7 @@
               <h4 class="text-lg font-bold text-slate-800">Algoritma & Pemrograman</h4>
               <p class="text-xs text-slate-500">Total: 30 Siswa Terdaftar</p>
               <div class="flex justify-between items-center pt-2 border-t text-xs">
-                <span class="text-slate-500">8 Modul Pembelajaran</span>
+                <span id="modul-kelas-8" class="text-slate-500 font-semibold">8 Modul Pembelajaran</span>
                 <a href="materi.html?mapel=Algoritma%20dan%20Pemrograman" class="text-indigo-600 font-bold hover:underline">Kelola Kelas →</a>[cite: 4]
               </div>
             </div>
@@ -129,6 +129,42 @@
       localStorage.removeItem('session_user');
       window.location.href = "index.html";
     }
+
+    // --- Skrip Tambahan Sinkronisasi Jumlah Modul dari Google Sheets ---
+    window.addEventListener('DOMContentLoaded', () => {
+      const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
+      const callbackName = 'onSyncModul_' + Math.round(Math.random() * 100000);
+      const script = document.createElement('script');
+
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (script.parentNode) document.body.removeChild(script);
+
+        let countKelas7 = 0;
+        let countKelas8 = 0;
+
+        (data || []).forEach(item => {
+          let target = (item.targetKelas || "").toLowerCase();
+          let mapel = (item.mapel || "").toLowerCase();
+
+          if (target.includes("vii") || target.includes("kelas 7") || mapel.includes("informatika dasar")) {
+            countKelas7++;
+          } 
+          if (target.includes("viii") || target.includes("kelas 8") || mapel.includes("algoritma")) {
+            countKelas8++;
+          }
+        });
+
+        const el7 = document.getElementById('modul-kelas-7');
+        const el8 = document.getElementById('modul-kelas-8');
+
+        if (el7) el7.innerText = `${countKelas7} Modul Pembelajaran`;
+        if (el8) el8.innerText = `${countKelas8} Modul Pembelajaran`;
+      };
+
+      script.src = `${GOOGLE_SCRIPT_URL}?action=getMateri&callback=${callbackName}`;
+      document.body.appendChild(script);
+    });
   </script>
 </body>
 </html>
