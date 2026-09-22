@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LMS Informatika - Dashboard Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
+
+  <div class="w-full max-w-7xl mx-auto">
+    <!-- Navbar Topbar Admin -->
+    <header class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+      <div class="flex items-center gap-3">
+        <div class="bg-rose-600 text-white p-2 rounded-lg font-bold">ADMIN</div>
+        <h1 class="text-xl font-bold">LMS Informatika - Panel Administrator</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <span id="display-role" class="text-sm bg-rose-600 text-white font-bold px-3 py-1 rounded-full">Admin Mode</span>
+        
+        <!-- Tombol Avatar Profil Admin -->
+        <button onclick="openProfileModal()" title="Klik untuk lihat profil" class="relative group focus:outline-none">
+          <div id="display-avatar-bg" class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center font-bold overflow-hidden border-2 border-rose-500 group-hover:border-white transition">
+            <img id="display-avatar-img" src="" alt="Profil" class="w-full h-full object-cover hidden">
+            <span id="display-avatar-text" class="text-white">A</span>
+          </div>
+        </button>
+
+        <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold flex items-center gap-1">
+          <i class="fas fa-sign-out-alt"></i> Keluar
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Section Admin -->
+    <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <!-- Sidebar Navigasi Khusus Admin -->
+      <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border">
+        <a href="dashboard-admin.html" class="p-3 bg-rose-50 text-rose-700 rounded-lg font-semibold flex items-center gap-3">
+          <i class="fas fa-user-shield"></i> Beranda Admin
+        </a>
+        <a href="kelola-pengguna.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-users-cog"></i> Kelola Pengguna
+        </a>
+        <a href="kelola-kelas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-school"></i> Master Kelas & Mapel
+        </a>
+        <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-bullhorn"></i> Pengumuman Sekolah
+        </a>
+        <a href="pengaturan-sistem.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-sliders-h"></i> Pengaturan Sistem
+        </a>
+      </aside>
+
+      <!-- Konten Utama Dashboard Admin -->
+      <section class="md:col-span-3 space-y-6">
+        <!-- Banner Menyapa Admin -->
+        <div class="bg-slate-800 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
+          <div>
+            <h2 id="welcome-title" class="text-2xl font-bold">Selamat Datang, Administrator!</h2>
+            <p id="welcome-sub" class="text-slate-300 mt-1">Memuat data sistem...</p>
+          </div>
+        </div>
+
+        <!-- Card Statistik Ringkas Admin -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-indigo-600 border">
+            <p class="text-slate-500 text-sm font-medium">Total Siswa</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1">120 <span class="text-xs text-indigo-600 font-normal">Siswa</span></p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-600 border">
+            <p class="text-slate-500 text-sm font-medium">Total Guru</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1">8 <span class="text-xs text-amber-600 font-normal">Pengajar</span></p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-600 border">
+            <p class="text-slate-500 text-sm font-medium">Mata Pelajaran</p>
+            <p class="text-2xl font-bold text-slate-800 mt-1">4 <span class="text-xs text-emerald-600 font-normal">Aktif</span></p>
+          </div>
+          <div class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-600 border">
+            <p class="text-slate-500 text-sm font-medium">Database status</p>
+            <p class="text-2xl font-bold text-emerald-600 mt-1 text-sm flex items-center gap-1">
+              <i class="fas fa-check-circle"></i> Terhubung
+            </p>
+          </div>
+        </div>
+
+        <!-- Panel Akses Cepat Admin -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border">
+          <h3 class="text-lg font-bold mb-4 text-slate-800">Aksi Cepat Administrator</h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <a href="kelola-pengguna.html" class="p-4 bg-slate-50 hover:bg-indigo-50 border rounded-xl text-center transition group">
+              <i class="fas fa-user-plus text-2xl text-indigo-600 mb-2 group-hover:scale-110 transition"></i>
+              <h4 class="font-bold text-slate-800">Tambah Pengguna</h4>
+              <p class="text-xs text-slate-500 mt-1">Siswa atau Guru baru</p>
+            </a>
+            <a href="pengumuman.html" class="p-4 bg-slate-50 hover:bg-rose-50 border rounded-xl text-center transition group">
+              <i class="fas fa-bullhorn text-2xl text-rose-600 mb-2 group-hover:scale-110 transition"></i>
+              <h4 class="font-bold text-slate-800">Buat Pengumuman</h4>
+              <p class="text-xs text-slate-500 mt-1">Siarkan ke seluruh akun</p>
+            </a>
+            <a href="pengaturan-sistem.html" class="p-4 bg-slate-50 hover:bg-amber-50 border rounded-xl text-center transition group">
+              <i class="fas fa-database text-2xl text-amber-600 mb-2 group-hover:scale-110 transition"></i>
+              <h4 class="font-bold text-slate-800">Cek Database</h4>
+              <p class="text-xs text-slate-500 mt-1">Sinkronisasi Google Sheets</p>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL POPUP PROFIL ADMIN -->
+  <div id="modal-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border">
+      <div class="bg-slate-900 p-6 text-center text-white relative">
+        <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-lg">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="w-24 h-24 mx-auto rounded-full bg-slate-800 border-4 border-rose-500 shadow-md overflow-hidden flex items-center justify-center text-3xl font-bold mb-2">
+          <img id="modal-foto" src="" alt="Foto Admin" class="w-full h-full object-cover hidden">
+          <span id="modal-initial" class="text-white">A</span>
+        </div>
+        <h3 id="modal-nama" class="font-bold text-lg">Nama Admin</h3>
+        <span id="modal-role" class="text-xs bg-rose-600 text-white font-bold px-2.5 py-1 rounded-full mt-1 inline-block">Admin</span>
+      </div>
+      <div class="p-6 space-y-3 text-sm">
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-id-card text-rose-600 mr-2"></i>ID Admin</span>
+          <span id="modal-id" class="font-bold font-mono text-slate-800">-</span>
+        </div>
+        <div class="flex justify-between border-b pb-2">
+          <span class="text-slate-500"><i class="fas fa-user-shield text-rose-600 mr-2"></i>Akses Sistem</span>
+          <span id="modal-kelas" class="font-semibold text-slate-800">Super Admin</span>
+        </div>
+        <div class="flex justify-between pb-1">
+          <span class="text-slate-500"><i class="fas fa-birthday-cake text-rose-600 mr-2"></i>Tanggal Lahir</span>
+          <span id="modal-tgl" class="font-semibold text-slate-800">-</span>
+        </div>
+      </div>
+      <div class="p-4 bg-slate-50 border-t text-center">
+        <button onclick="closeProfileModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-xs transition">
+          Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const userData = JSON.parse(localStorage.getItem('session_user'));
+
+    // Proteksi Hak Akses Halaman Admin
+    if (!userData) {
+      window.location.href = "index.html";
+    } else if (String(userData.role || '').toLowerCase() !== "admin") {
+      // Jika bukan Admin, kembalikan ke dashboard yang sesuai
+      if (String(userData.role || '').toLowerCase() === "guru") {
+        window.location.href = "dashboard-guru.html";
+      } else {
+        window.location.href = "dashboard.html";
+      }
+    } else {
+      document.getElementById('display-role').innerText = userData.role + " Mode";
+      document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
+      document.getElementById('welcome-sub').innerText = `ID Administrator: ${userData.id}`;
+
+      // Render Avatar Nav Atas
+      const displayAvatarImg = document.getElementById('display-avatar-img');
+      const displayAvatarText = document.getElementById('display-avatar-text');
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        displayAvatarImg.src = userData.foto;
+        displayAvatarImg.classList.remove('hidden');
+        displayAvatarText.classList.add('hidden');
+      } else {
+        displayAvatarText.innerText = userData.nama ? userData.nama[0] : 'A';
+        displayAvatarImg.classList.add('hidden');
+        displayAvatarText.classList.remove('hidden');
+      }
+    }
+
+    function openProfileModal() {
+      document.getElementById('modal-nama').innerText = userData.nama || 'Administrator';
+      document.getElementById('modal-role').innerText = userData.role || 'Admin';
+      document.getElementById('modal-id').innerText = userData.id || '-';
+      document.getElementById('modal-kelas').innerText = userData.kelas || 'Super Admin';
+      document.getElementById('modal-tgl').innerText = userData.tglLahir || '-';
+
+      const modalFoto = document.getElementById('modal-foto');
+      const modalInitial = document.getElementById('modal-initial');
+
+      if (userData.foto && userData.foto.trim() !== "") {
+        modalFoto.src = userData.foto;
+        modalFoto.classList.remove('hidden');
+        modalInitial.classList.add('hidden');
+      } else {
+        modalInitial.innerText = userData.nama ? userData.nama[0] : 'A';
+        modalFoto.classList.add('hidden');
+        modalInitial.classList.remove('hidden');
+      }
+
+      document.getElementById('modal-profile').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('modal-profile').classList.add('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('session_user');
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
