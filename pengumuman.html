@@ -147,6 +147,10 @@
         displayAvatarImg.classList.add('hidden');
         displayAvatarText.classList.remove('hidden');
       }
+
+      // Tandai pengumuman otomatis sudah dibaca saat halaman ini dibuka
+      let list = ['peng1', 'peng2'];
+      localStorage.setItem('read_pengumuman', JSON.stringify(list));
     }
 
     function openProfileModal() {
