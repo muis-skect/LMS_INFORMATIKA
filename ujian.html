@@ -72,9 +72,9 @@
               <h3 class="font-bold text-lg text-slate-800">Ujian CP 1: Berpikir Komputasional</h3>
               <p class="text-sm text-slate-500">Waktu: 60 Menit • Batas Pengerjaan: Hari ini, 23.59 WIB</p>
             </div>
-            <a href="#" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition text-center w-full md:w-auto shadow">
+            <button id="btn-uj1" onclick="completeItem('ujian', 'uj1')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition text-center w-full md:w-auto shadow">
               Masuk Ruang Ujian
-            </a>
+            </button>
           </div>
 
           <!-- Card Ujian Selesai -->
@@ -150,6 +150,32 @@
         displayAvatarImg.classList.add('hidden');
         displayAvatarText.classList.remove('hidden');
       }
+
+      checkStatus();
+    }
+
+    function completeItem(type, itemId) {
+      let list = JSON.parse(localStorage.getItem('completed_' + type) || '[]');
+      if (!list.includes(itemId)) {
+        list.push(itemId);
+        localStorage.setItem('completed_' + type, JSON.stringify(list));
+      }
+      alert("Ujian berhasil dikerjakan!");
+      checkStatus();
+    }
+
+    function checkStatus() {
+      let list = JSON.parse(localStorage.getItem('completed_ujian') || '[]');
+      ['uj1'].forEach(id => {
+        if (list.includes(id)) {
+          const btn = document.getElementById('btn-' + id);
+          if (btn) {
+            btn.innerText = "Sudah Dikerjakan";
+            btn.className = "bg-slate-300 text-slate-600 px-5 py-2.5 rounded-lg font-bold text-sm cursor-not-allowed w-full md:w-auto";
+            btn.disabled = true;
+          }
+        }
+      });
     }
 
     function openProfileModal() {
