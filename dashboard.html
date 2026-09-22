@@ -9,36 +9,33 @@
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen p-4">
 
-  <div class="w-full max-w-7xl mx-auto">
-    <!-- Navbar Topbar Siswa -->
-    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl mb-6">
+  <div class="w-full max-w-7xl mx-auto space-y-6">
+    <!-- Navbar Topbar -->
+    <header class="bg-indigo-900 text-white px-6 py-4 flex justify-between items-center shadow-md rounded-2xl">
       <div class="flex items-center gap-3">
-        <div class="bg-indigo-700 p-2 rounded-lg font-bold">LMS</div>
+        <div class="bg-indigo-600 px-3 py-1 rounded-lg font-bold text-xs uppercase">LMS</div>
         <h1 class="text-xl font-bold">LMS Informatika Sekolah</h1>
       </div>
       <div class="flex items-center gap-4">
-        <span id="display-role" class="text-sm bg-indigo-800 px-3 py-1 rounded-full">Siswa Mode</span>
-        
-        <!-- Avatar Profil Siswa -->
-        <button onclick="openProfileModal()" title="Klik untuk lihat profil" class="relative group focus:outline-none">
-          <div id="display-avatar-bg" class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold overflow-hidden border-2 border-indigo-300 group-hover:border-white transition">
-            <img id="display-avatar-img" src="" alt="Profil" class="w-full h-full object-cover hidden">
-            <span id="display-avatar-text" class="text-white">U</span>
-          </div>
-        </button>
-
+        <span class="text-xs bg-amber-500 text-indigo-950 font-bold px-3 py-1 rounded-full">Siswa Mode</span>
+        <img id="user-photo" src="https://via.placeholder.com/40" class="w-9 h-9 rounded-full object-cover border-2 border-amber-400">
         <button onclick="logout()" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg font-bold flex items-center gap-1">
           <i class="fas fa-sign-out-alt"></i> Keluar
         </button>
       </div>
     </header>
 
-    <!-- Main Section -->
     <main class="grid grid-cols-1 md:grid-cols-4 gap-6">
-      <!-- Sidebar Navigasi Siswa -->
+      <!-- Sidebar Navigasi -->
       <aside class="md:col-span-1 bg-white p-4 rounded-xl shadow-sm space-y-2 h-fit border">
         <a href="dashboard.html" class="p-3 bg-indigo-50 text-indigo-700 rounded-lg font-semibold flex items-center gap-3">
           <i class="fas fa-home"></i> Beranda
+        </a>
+        <a href="pengumuman.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
+          <i class="fas fa-bullhorn"></i> Pemberitahuan
+        </a>
+        <a href="materi.html?mapel=Informatika%20Dasar" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg hover:text-indigo-600">
+          <i class="fas fa-book-open"></i> Materi Pembelajaran
         </a>
         <a href="tugas.html" class="flex items-center gap-3 p-3 text-slate-600 hover:bg-slate-50 rounded-lg">
           <i class="fas fa-tasks"></i> Tugas Saya
@@ -51,205 +48,105 @@
         </a>
       </aside>
 
-      <!-- Konten Utama Beranda Siswa -->
+      <!-- Main Content -->
       <section class="md:col-span-3 space-y-6">
-        <div class="bg-indigo-700 text-white p-6 rounded-xl shadow-md flex justify-between items-center">
-          <div>
-            <h2 id="welcome-title" class="text-2xl font-bold">Selamat Datang!</h2>
-            <p id="welcome-sub" class="text-indigo-200 mt-1">Memuat data...</p>
+        <!-- Banner Selamat Datang -->
+        <div class="bg-indigo-700 text-white p-6 rounded-2xl shadow-md">
+          <h2 id="welcome-text" class="text-2xl font-bold">Selamat Datang, Siswa!</h2>
+          <p id="user-info" class="text-indigo-200 text-sm mt-1">ID: - | Kelas -</p>
+        </div>
+
+        <!-- Kartu Ringkasan -->
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-white p-4 rounded-xl border border-blue-200 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">Tugas</p>
+            <h3 class="text-2xl font-bold text-indigo-900 mt-1">2</h3>
           </div>
-        </div>
-
-        <!-- Card Statistik Ringkas Siswa (Dinamis Berkurang Saat Dikerjakan) -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a href="tugas.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 border hover:shadow-md hover:-translate-y-0.5 transition block">
-            <p class="text-slate-500 text-sm font-medium">Tugas</p>
-            <p id="count-tugas" class="text-2xl font-bold text-slate-800 mt-1">2</p>
-          </a>
-          <a href="latihan.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-amber-500 border hover:shadow-md hover:-translate-y-0.5 transition block">
-            <p class="text-slate-500 text-sm font-medium">Latihan</p>
-            <p id="count-latihan" class="text-2xl font-bold text-slate-800 mt-1">2</p>
-          </a>
-          <a href="ujian.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-emerald-500 border hover:shadow-md hover:-translate-y-0.5 transition block">
-            <p class="text-slate-500 text-sm font-medium">Ujian CP</p>
-            <p id="count-ujian" class="text-2xl font-bold text-slate-800 mt-1">1</p>
-          </a>
-          <a href="pengumuman.html" class="bg-white p-4 rounded-xl shadow-sm border-l-4 border-rose-500 border hover:shadow-md hover:-translate-y-0.5 transition block">
-            <p class="text-slate-500 text-sm font-medium">Pemberitahuan</p>
-            <p id="count-pemberitahuan" class="text-2xl font-bold text-slate-800 mt-1">...</p>
+          <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">Latihan</p>
+            <h3 class="text-2xl font-bold text-indigo-900 mt-1">0</h3>
+          </div>
+          <div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-sm">
+            <p class="text-xs text-slate-500 font-semibold">Ujian CP</p>
+            <h3 class="text-2xl font-bold text-indigo-900 mt-1">0</h3>
+          </div>
+          <a href="pengumuman.html" class="bg-white p-4 rounded-xl border border-red-200 shadow-sm hover:border-red-400 transition block">
+            <p class="text-xs text-slate-500 font-semibold">Pemberitahuan</p>
+            <h3 id="count-pemberitahuan" class="text-2xl font-bold text-indigo-900 mt-1">0</h3>
           </a>
         </div>
 
-        <!-- Daftar Mata Pelajaran -->
+        <!-- Mata Pelajaran Aktif -->
         <div>
-          <h3 class="text-lg font-bold mb-4 text-slate-800">Mata Pelajaran Aktif</h3>
+          <h3 class="text-lg font-bold text-slate-800 mb-3">Mata Pelajaran Aktif</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
-              <span class="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded">Kelas VII</span>
-              <h4 class="font-bold text-lg mt-2">Informatika Dasar</h4>
-              <p class="text-sm text-slate-500 mt-1">Guru: Budi Santoso, S.Pd.</p>
-              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
+            
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-200">Kelas VII</span>
+              <h4 class="text-lg font-bold text-slate-800">Informatika Dasar</h4>
+              <p class="text-xs text-slate-500">Guru: Budi Santoso, S.Pd.</p>
+              <div class="flex justify-between items-center pt-2 border-t text-xs">
                 <span class="text-slate-500">12 Modul</span>
-                <a href="materi.html?mapel=Informatika%20Dasar" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>
+                <a href="materi.html?mapel=Informatika%20Dasar" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>[cite: 3]
               </div>
             </div>
 
-            <div class="bg-white p-5 rounded-xl shadow-sm border hover:shadow-md transition">
-              <span class="text-xs font-semibold bg-emerald-100 text-emerald-700 px-2 py-1 rounded">Kelas VII</span>
-              <h4 class="font-bold text-lg mt-2">Algoritma & Pemrograman</h4>
-              <p class="text-sm text-slate-500 mt-1">Guru: Dr. Maya, M.Si.</p>
-              <div class="mt-4 pt-3 border-t flex justify-between items-center text-sm">
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+              <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">Kelas VII</span>
+              <h4 class="text-lg font-bold text-slate-800">Algoritma & Pemrograman</h4>
+              <p class="text-xs text-slate-500">Guru: Dr. Maya, M.Si.</p>
+              <div class="flex justify-between items-center pt-2 border-t text-xs">
                 <span class="text-slate-500">8 Modul</span>
-                <a href="materi.html?mapel=Algoritma%20dan%20Pemrograman" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>
+                <a href="materi.html?mapel=Algoritma%20dan%20Pemrograman" class="text-indigo-600 font-bold hover:underline">Masuk Kelas →</a>[cite: 3]
               </div>
             </div>
+
           </div>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- MODAL POPUP PROFIL SISWA -->
-  <div id="modal-profile" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl overflow-hidden border">
-      <div class="bg-indigo-900 p-6 text-center text-white relative">
-        <button onclick="closeProfileModal()" class="absolute top-4 right-4 text-slate-300 hover:text-white text-lg">
-          <i class="fas fa-times"></i>
-        </button>
-        <div class="w-24 h-24 mx-auto rounded-full bg-indigo-700 border-4 border-white shadow-md overflow-hidden flex items-center justify-center text-3xl font-bold mb-2">
-          <img id="modal-foto" src="" alt="Foto Siswa" class="w-full h-full object-cover hidden">
-          <span id="modal-initial" class="text-white">U</span>
-        </div>
-        <h3 id="modal-nama" class="font-bold text-lg">Nama Siswa</h3>
-        <span id="modal-role" class="text-xs bg-indigo-700 px-2.5 py-1 rounded-full text-indigo-100 mt-1 inline-block">Siswa</span>
-      </div>
-      <div class="p-6 space-y-3 text-sm">
-        <div class="flex justify-between border-b pb-2">
-          <span class="text-slate-500"><i class="fas fa-id-card text-indigo-600 mr-2"></i>NISN / NIP</span>
-          <span id="modal-id" class="font-bold font-mono text-slate-800">-</span>
-        </div>
-        <div class="flex justify-between border-b pb-2">
-          <span class="text-slate-500"><i class="fas fa-graduation-cap text-indigo-600 mr-2"></i>Kelas</span>
-          <span id="modal-kelas" class="font-semibold text-slate-800">-</span>
-        </div>
-        <div class="flex justify-between pb-1">
-          <span class="text-slate-500"><i class="fas fa-birthday-cake text-indigo-600 mr-2"></i>Tanggal Lahir</span>
-          <span id="modal-tgl" class="font-semibold text-slate-800">-</span>
-        </div>
-      </div>
-      <div class="p-4 bg-slate-50 border-t text-center">
-        <button onclick="closeProfileModal()" class="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2 rounded-xl text-xs transition">
-          Tutup
-        </button>
-      </div>
-    </div>
-  </div>
-
   <script>
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxFroZV42YVKy8UrVhh1nr8FR9jH9JBATUAhZ_O4QJfiG6d23ejVzHo0FWVY7zO8rEF/exec";
-    const userData = JSON.parse(localStorage.getItem('session_user'));
+    const user = JSON.parse(localStorage.getItem('session_user'));
 
-    if (!userData) {
+    if (!user) {
       window.location.href = "index.html";
     } else {
-      // Proteksi Role: Alihkan jika yang login adalah Guru/Admin
-      const userRole = String(userData.role || '').toLowerCase();
-      if (userRole === "guru") {
-        window.location.href = "dashboard-guru.html";
-      } else if (userRole === "admin") {
-        window.location.href = "dashboard-admin.html";
-      }
-
-      document.getElementById('display-role').innerText = userData.role + " Mode";
-      document.getElementById('welcome-title').innerText = "Selamat Datang, " + userData.nama + "!";
-      document.getElementById('welcome-sub').innerText = `ID: ${userData.id} | ${userData.kelas || userData.detail}`;
-
-      // Hitung item tugas, latihan, ujian lokal
-      const completedTasks = JSON.parse(localStorage.getItem('completed_tugas') || '[]');
-      const completedLatihan = JSON.parse(localStorage.getItem('completed_latihan') || '[]');
-      const completedUjian = JSON.parse(localStorage.getItem('completed_ujian') || '[]');
-
-      const totalTugas = 2;
-      const totalLatihan = 2;
-      const totalUjian = 1;
-
-      document.getElementById('count-tugas').innerText = Math.max(0, totalTugas - completedTasks.length);
-      document.getElementById('count-latihan').innerText = Math.max(0, totalLatihan - completedLatihan.length);
-      document.getElementById('count-ujian').innerText = Math.max(0, totalUjian - completedUjian.length);
-
-      // Ambil jumlah pemberitahuan secara langsung dari Google Sheets
-      fetchPemberitahuanCount();
-
-      // Render Avatar Nav Atas
-      const displayAvatarImg = document.getElementById('display-avatar-img');
-      const displayAvatarText = document.getElementById('display-avatar-text');
-
-      if (userData.foto && userData.foto.trim() !== "") {
-        displayAvatarImg.src = userData.foto;
-        displayAvatarImg.classList.remove('hidden');
-        displayAvatarText.classList.add('hidden');
-      } else {
-        displayAvatarText.innerText = userData.nama ? userData.nama[0] : 'U';
-        displayAvatarImg.classList.add('hidden');
-        displayAvatarText.classList.remove('hidden');
-      }
+      document.getElementById('welcome-text').innerText = "Selamat Datang, " + user.nama + "!";
+      document.getElementById('user-info').innerText = "ID: " + user.id + " | Kelas " + (user.kelas || "-");
+      if (user.foto) document.getElementById('user-photo').src = user.foto;
     }
 
-    // Fungsi mengambil jumlah pemberitahuan belum dibaca dari Google Sheets
-    function fetchPemberitahuanCount() {
-      const callbackName = 'onCountReceived_' + Math.round(Math.random() * 100000);
+    // Ambil Jumlah Pemberitahuan
+    function loadNotificationCount() {
+      const callbackName = 'onNotifReceived_' + Math.round(Math.random() * 100000);
       const script = document.createElement('script');
 
       window[callbackName] = function(data) {
         delete window[callbackName];
         if (script.parentNode) document.body.removeChild(script);
 
-        if (!data || !Array.isArray(data)) data = [];
+        const userKelas = (user.kelas || "").trim().toLowerCase();
+        const filtered = (data || []).filter(item => {
+          const target = (item.targetKelas || "Semua").trim().toLowerCase();
+          return target === "semua" || target === userKelas;
+        });
 
-        // Ambil daftar ID pemberitahuan yang sudah pernah dibuka oleh siswa ini
-        const readPengumuman = JSON.parse(localStorage.getItem('read_pengumuman') || '[]');
-        
-        // Hitung berapa item dari database yang ID-nya belum ada di list read_pengumuman
-        const unreadCount = data.filter(item => !readPengumuman.includes(String(item.id))).length;
-
-        document.getElementById('count-pemberitahuan').innerText = unreadCount;
+        document.getElementById('count-pemberitahuan').innerText = filtered.length;
       };
 
       script.src = `${GOOGLE_SCRIPT_URL}?action=getPemberitahuan&callback=${callbackName}`;
       document.body.appendChild(script);
     }
 
-    function openProfileModal() {
-      document.getElementById('modal-nama').innerText = userData.nama || 'Nama Siswa';
-      document.getElementById('modal-role').innerText = userData.role || 'Siswa';
-      document.getElementById('modal-id').innerText = userData.id || '-';
-      document.getElementById('modal-kelas').innerText = userData.kelas || userData.detail || '-';
-      document.getElementById('modal-tgl').innerText = userData.tglLahir || '-';
-
-      const modalFoto = document.getElementById('modal-foto');
-      const modalInitial = document.getElementById('modal-initial');
-
-      if (userData.foto && userData.foto.trim() !== "") {
-        modalFoto.src = userData.foto;
-        modalFoto.classList.remove('hidden');
-        modalInitial.classList.add('hidden');
-      } else {
-        modalInitial.innerText = userData.nama ? userData.nama[0] : 'U';
-        modalFoto.classList.add('hidden');
-        modalInitial.classList.remove('hidden');
-      }
-
-      document.getElementById('modal-profile').classList.remove('hidden');
-    }
-
-    function closeProfileModal() {
-      document.getElementById('modal-profile').classList.add('hidden');
-    }
-
     function logout() {
       localStorage.removeItem('session_user');
       window.location.href = "index.html";
     }
+
+    loadNotificationCount();
   </script>
 </body>
 </html>
